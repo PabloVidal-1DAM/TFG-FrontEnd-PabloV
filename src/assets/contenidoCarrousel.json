@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "titulo": "Clientes y Proveedores Reales",
+        "subtitulo": "La plataforma definitiva para gestionar tus pedidos y controlar el stock sin intermediarios.",
+        "imagen": "https://images.unsplash.com/photo-1586528116311-ad8ed7c663c0?q=80&w=1200&auto=format&fit=crop", 
+        "textoBoton": "Ver Productos"
+    },
+    {
+        "id": 2,
+        "titulo": "Gestión de Stock Simplificada",
+        "subtitulo": "Mantén tu inventario al día con nuestro sistema automatizado.",
+        "imagen": "https://images.unsplash.com/photo-1586528116311-ad8ed7c663c0?q=80&w=1200&auto=format&fit=crop", 
+        "textoBoton": "Saber Más"
+    },
+    {
+        "id": 3,
+        "titulo": "Seguridad y Confianza B2B",
+        "subtitulo": "Tus transacciones y datos empresariales totalmente protegidos con nuestra arquitectura.",
+        "imagen": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=1200&auto=format&fit=crop",
+        "textoBoton": "Únete Ahora"
+    }
+]

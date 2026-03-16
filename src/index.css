@@ -10,3 +10,39 @@
 
   --color-neutro: #EDEDED; /*Pensado para el fondo general de la página entera. */
 }
+
+body{
+  background-color: var(--color-neutro);
+}
+
+/*Estilos para que se muestren los círculos indicadores del componente "Carrousel" de primeReact, 
+ ya que al instalar tailwind este hace un reseteo de todo el CSS por defecto, incluyendo la biblioteca de primeReact. */
+.p-carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+/* Círculos inactivos */
+.p-carousel-indicator button {
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background-color: #d1d5db !important; /* Un gris neutro */
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Círculo activo (el de la imagen actual) */
+.p-carousel-indicator.p-highlight button {
+  background-color: var(--color-primario) !important; /* Color primario de la empresa*/
+  transform: scale(1.3); 
+}
+
+.p-carousel-content{
+  height: 300px;
+}

@@ -1,5 +1,6 @@
 import React from 'react'
 import logoHeader from "../../assets/logoHeader.png";
+import Menu from './Menu.jsx';
 
 const Header = () => {
   return (
@@ -18,14 +19,7 @@ const Header = () => {
           </div>
 
           {/* Columna Derecha: Navegación */}
-          <nav className="flex justify-end items-center space-x-8">
-            <a href="#" className="text-white hover:text-terciario font-medium">Catálogo</a>
-            <a href="#" className="text-white hover:text-terciario font-medium">Nosotros</a>
-            <a href="#" className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-terciario transition">
-              Iniciar Sesión
-            </a>
-          </nav>
-
+          <Menu />
         </div>
       </div>
     </header>

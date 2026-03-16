@@ -13,7 +13,6 @@ function App() {
   return (
     <>
       <Header />
-      <Menu />
       <Contenido>
         <Rutas />
       </Contenido>
