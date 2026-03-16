@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@theme{
+    /* Colores que establecí importantes en la guía de estilos */
+  --color-primario: #386641;
+  --color-primario-hover: #4a8756; /* Un tono un pelín más claro por si se necesitase para un hover */
+
+  --color-secundario: #6c584c; /* Pensado para usarse en el footer */
+  --color-terciario: #dde5b6; /*Botones secundarios, links, iconos interactivos...*/
+
+  --color-neutro: #EDEDED; /*Pensado para el fondo general de la página entera. */
+}

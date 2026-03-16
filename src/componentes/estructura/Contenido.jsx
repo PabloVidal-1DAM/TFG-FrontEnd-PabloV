@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Contenido = ({props}) => {
+const Contenido = (props) => {
   return (
     <div>
       {props.children}
