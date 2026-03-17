@@ -11,7 +11,7 @@ const Pie = () => {
           
           <div className="space-y-4">
             <div className="flex items-center">
-                <Link to="/"> {/* Hacemos que el logo también lleve al inicio */}
+                <Link to="/"> {/* El logo también lleva a la página de inicio. */}
                   <img 
                     src={logo_base} 
                     alt="Logotipo TetraBIOS" 
@@ -28,7 +28,7 @@ const Pie = () => {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Navegación</h3>
             <ul className="space-y-2 text-sm">
-              {/* 2. Cambiamos <a> por <Link> y href="#" por to="/..." */}
+              {/* He Cambiado <a> por <Link>, para respetar el Single Page Application y no recargar la web. */}
               <li><Link to="/" className="hover:text-terciario transition-colors">Inicio</Link></li>
               <li><Link to="/catalogo" className="hover:text-terciario transition-colors">Catálogo de Productos</Link></li>
               <li><Link to="/proveedores" className="hover:text-terciario transition-colors">Proveedores</Link></li>
@@ -39,7 +39,6 @@ const Pie = () => {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Legal</h3>
             <ul className="space-y-2 text-sm">
-              {/* Para los legales, podemos poner rutas preparadas para el futuro */}
               <li><Link to="/legal" className="hover:text-terciario transition-colors">Aviso Legal</Link></li>
               <li><Link to="/privacidad" className="hover:text-terciario transition-colors">Política de Privacidad</Link></li>
               <li><Link to="/cookies" className="hover:text-terciario transition-colors">Política de Cookies</Link></li>

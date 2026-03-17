@@ -11,6 +11,27 @@
   --color-neutro: #EDEDED; /*Pensado para el fondo general de la página entera. */
 }
 
+/* Estilos para los distintos botones de mi web: */
+@layer components {
+  /* La base que comparten todos los botones */
+  .btn-base {
+    @apply font-bold py-2 px-6 rounded-md transition duration-300 ease-in-out shadow-sm flex items-center justify-center gap-2;
+  }
+
+  /* Las distintas variantes */
+  .btn-primario {
+    @apply bg-primario text-white shadow-md hover:bg-primario-hover;
+  }
+  
+  .btn-secundario {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+  }
+  
+  .btn-contorno {
+    @apply border-2 border-primario text-primario hover:bg-primario hover:text-white;
+  }
+}
+
 body{
   background-color: var(--color-neutro);
 }
@@ -44,5 +65,5 @@ body{
 }
 
 .p-carousel-content{
-  height: 300px;
+  height: 500px;
 }

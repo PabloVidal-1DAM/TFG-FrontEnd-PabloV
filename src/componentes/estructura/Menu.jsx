@@ -5,7 +5,8 @@ const Menu = () => {
   return (
 <nav className="flex justify-end items-center space-x-8">
       
-      {/* Usamos NavLink para los enlaces principales. Si la ruta está activa, se pone verde clarito. */}
+      {/* Uso NavLink para los enlaces principales, ya que con su "isActive" si la ruta está activa, el botón se pone verde clarito. */}
+      {/*Es por solo estética, Link ya cumple con su función bien.*/}
       <NavLink 
         to="/catalogo" 
         className={({ isActive }) => 
@@ -28,7 +29,7 @@ const Menu = () => {
         Nosotros
       </NavLink>
       
-      {/* Usamos Link normal para el botón, ya que no necesita cambiar de color al estar activo */}
+      {/* Uso Link normal para el botón de Iniciar Sesion, ya que no necesita cambiar de color al estar activo. */}
       <Link 
         to="/login" 
         className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition"
