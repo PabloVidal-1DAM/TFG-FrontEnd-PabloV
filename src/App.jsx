@@ -7,13 +7,16 @@ import Header from "./componentes/estructura/Header.jsx";
 import Contenido from "./componentes/estructura/Contenido.jsx";
 import Rutas from "./componentes/estructura/Rutas.jsx";
 import Pie from "./componentes/estructura/Pie.jsx";
+import ProveedorProductos from "./componentes/context/ProveedorProductos.jsx";
 
 function App() {
   return (
     <>
       <Header />
       <Contenido>
-        <Rutas />
+        <ProveedorProductos>
+          <Rutas />
+        </ProveedorProductos>
       </Contenido>
       <Pie />
     </>
