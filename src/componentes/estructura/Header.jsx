@@ -17,7 +17,7 @@ const Header = () => {
               <img
                 src={logoMovil}
                 alt="Icono TetraBIOS"
-                className="h-12 w-auto object-contain min-[460px]:hidden"
+                className="h-20 w-auto object-contain min-[460px]:hidden"
               />
             {/*Logo que se mostrará en el resto de tamaños.*/}
               <img

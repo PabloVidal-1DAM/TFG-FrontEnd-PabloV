@@ -32,6 +32,25 @@
   }
 }
 
+/* Animación para el componente cargando (spinner) de prime react. */
+/* He hecho que vaya cambiando en transiciones de los colores corporativos que guardo en variables arriba. */
+@keyframes colores-corporativos {
+  0%, 100% {
+    stroke: var(--color-primario);
+  }
+  33% {
+    stroke: var(--color-secundario);
+  }
+  66% {
+    stroke: var(--color-terciario);
+  }
+}
+
+/* Le decimos a la clase personalizada que use nuestra animación de colores junto a la de giro por defecto de PrimeReact */
+.spinner-tetra .p-progress-spinner-circle {
+  animation: p-progress-spinner-dash 1.5s ease-in-out infinite, colores-corporativos 2.5s ease-in-out infinite !important;
+}
+
 body{
   background-color: var(--color-neutro);
 }
