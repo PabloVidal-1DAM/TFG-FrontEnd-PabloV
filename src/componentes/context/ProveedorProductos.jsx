@@ -17,7 +17,6 @@ const ProveedorProductos = ({ children }) => {
 
     setListaProductos(respuesta.data); // Guarda los 6 productos de la página pasada.
     setTotalProductos(respuesta.total); // Guarda el número total real (ej. 30).
-    setPaginaActual(pagina); // Actualiza en qué página se esta en ese momento.
   };
 
     // Función que se ejecuta cuando el usuario hace clic en los números (1, 2, 3...)

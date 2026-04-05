@@ -34,15 +34,15 @@ const Productos = () => {
             ))}
           </div>
 
-          {/* --- COMPONENTE PAGINADOR DE PRIMEREACT --- */}
+          {/* --- Componente paginador de prime react --- */}
           {totalProductos > 0 && (
             <div className="mt-12 flex justify-center">
               <Paginator
                 first={primerElemento}
-                rows={6} // El mismo número que pusimos en Laravel
+                rows={6} // El mismo número que tengo puesto en Laravel
                 totalRecords={totalProductos}
                 onPageChange={alCambiarPagina}
-                // Personalizamos los colores usando el Pass Through (pt)
+                // Personalizo los colores usando el Pass Through (pt)
                 pt={{
                   root: { className: "bg-transparent border-none" },
                   pageButton: ({ context }) => ({
