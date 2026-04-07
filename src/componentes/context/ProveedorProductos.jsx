@@ -6,42 +6,59 @@ const ProveedorProductos = ({ children }) => {
   const { obtenerDatos, cargando } = useAPI();
 
   const [listaProductos, setListaProductos] = useState([]);
+  const [productosDestacados, setProductosDestacados] = useState([]);
   // Estados para la paginación:
   const [totalProductos, setTotalProductos] = useState(0);
   const [primerElemento, setPrimerElemento] = useState(0);
 
   // La función para que acepa un número de página a mostrar (por defecto la 1).
   const cargarProductos = async (pagina = 1) => {
-    // Le pasamos el parámetro ?page= al endpoint de Laravel para que sepa que página traer.
-    const respuesta = await obtenerDatos(`productos?page=${pagina}`);
+    try {
+      // Le pasamos el parámetro ?page= al endpoint de Laravel para que sepa que página traer.
+      const respuesta = await obtenerDatos(`productos?page=${pagina}`);
 
-    setListaProductos(respuesta.data); // Guarda los 6 productos de la página pasada.
-    setTotalProductos(respuesta.total); // Guarda el número total real (ej. 30).
+      setListaProductos(respuesta.data); // Guarda los 6 productos de la página pasada.
+      setTotalProductos(respuesta.total); // Guarda el número total real (ej. 30).
+    } catch (error) {
+      console.log("Ha ocurrido un error al traer los productos: " + error); // cambiar cuando se tenga el setError
+    }
   };
 
-    // Función que se ejecuta cuando el usuario hace clic en los números (1, 2, 3...)
-    const alCambiarPagina = (evento) => {
-        setPrimerElemento(evento.first);
+  const cargarDestacados = async () => {
+    try {
+      // Suponiendo que haces un endpoint llamado "productos/destacados" en Laravel
+      const respuesta = await obtenerDatos("productos/destacados");
+      // Como aquí Laravel no pagina, seguramente te devuelva el array directo
+      console.log(respuesta);
+      setProductosDestacados(respuesta);
+    } catch (error) {}
+  };
 
-        // OJO: PrimeReact empieza a contar las páginas desde el 0.
-        // Laravel empieza desde el 1. Por eso le sumamos +1.
-        cargarProductos(evento.page + 1);
-        
-        // Opcional: Un pequeño scroll suave hacia arriba al cambiar de página
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+  // Función que se ejecuta cuando el usuario hace clic en los números (1, 2, 3...)
+  const alCambiarPagina = (evento) => {
+    setPrimerElemento(evento.first);
+
+    // OJO: PrimeReact empieza a contar las páginas desde el 0.
+    // Laravel empieza desde el 1. Por eso le sumamos +1.
+    cargarProductos(evento.page + 1);
+
+    // Opcional: Un pequeño scroll suave hacia arriba al cambiar de página
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   useEffect(() => {
+    cargarDestacados();
     cargarProductos();
   }, []);
 
   const datos = {
     listaProductos,
+    productosDestacados,
     cargando,
-    totalProductos,  
-    primerElemento,   
+    totalProductos,
+    primerElemento,
     cargarProductos, // El Paginador las usa para llamar a la siguiente página.
-    alCambiarPagina
+    alCambiarPagina,
   };
 
   return (
