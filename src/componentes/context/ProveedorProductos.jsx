@@ -6,6 +6,7 @@ const ProveedorProductos = ({ children }) => {
   const { obtenerDatos, cargando } = useAPI();
 
   const [listaProductos, setListaProductos] = useState([]);
+  const [productoSeleccionado, setProductoSeleccionado] = useState({});
   const [productosDestacados, setProductosDestacados] = useState([]);
   // Estados para la paginación:
   const [totalProductos, setTotalProductos] = useState(0);
@@ -23,26 +24,34 @@ const ProveedorProductos = ({ children }) => {
       console.log("Ha ocurrido un error al traer los productos: " + error); // cambiar cuando se tenga el setError
     }
   };
-
+  // Función para traer los productos destacados de la bbdd, basado en los que más están en los pedidos de la gente.
   const cargarDestacados = async () => {
     try {
-      // Suponiendo que haces un endpoint llamado "productos/destacados" en Laravel
       const respuesta = await obtenerDatos("productos/destacados");
-      // Como aquí Laravel no pagina, seguramente te devuelva el array directo
-      console.log(respuesta);
       setProductosDestacados(respuesta);
-    } catch (error) {}
+    } catch (error) {
+      console.log("Ha ocurrido un error al traer los productos destacados: " + error);
+    }
   };
 
-  // Función que se ejecuta cuando el usuario hace clic en los números (1, 2, 3...)
+  const cargarProductoSeleccionado = async(id) =>{
+    try{
+      const respuesta = await obtenerDatos(`productos/${id}`);
+      setProductoSeleccionado(respuesta);
+    }catch(error){
+      console.log("Ha ocurrido un error al traer el producto seleccionado: " + error);
+    }
+  }
+
+  // Función que se ejecuta cuando el usuario hace clic en los números para pasar de página.
   const alCambiarPagina = (evento) => {
     setPrimerElemento(evento.first);
 
     // OJO: PrimeReact empieza a contar las páginas desde el 0.
-    // Laravel empieza desde el 1. Por eso le sumamos +1.
+    // Laravel empieza desde el 1. Por eso le sumo +1.
     cargarProductos(evento.page + 1);
 
-    // Opcional: Un pequeño scroll suave hacia arriba al cambiar de página
+    // Efecto de un pequeño scroll suave hacia arriba al cambiar de página para no quedarse abajo y perderse información.
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -59,6 +68,8 @@ const ProveedorProductos = ({ children }) => {
     primerElemento,
     cargarProductos, // El Paginador las usa para llamar a la siguiente página.
     alCambiarPagina,
+    cargarProductoSeleccionado, // Cuando el usuario seleccione un producto del catálogo.
+    productoSeleccionado
   };
 
   return (

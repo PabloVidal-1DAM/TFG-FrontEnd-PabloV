@@ -3,13 +3,14 @@ import { Card } from "primereact/card";
 import Boton from "../ui/boton";
 import { formatearMoneda } from "../functions/formatos";
 import { Rating } from "primereact/rating";
+import { useNavigate } from "react-router-dom"; // temporal, cambiar al proveedor de sesión cuando se tenga.
 
 const Producto = ({ producto }) => {
   const urlImagen = `http://localhost:8095/storage/${producto.imagen_url}`;
+  const navegar = useNavigate();
 
-  // 2. LÓGICA DE ESTRELLAS:
   // parseFloat convierte "3.5000" a 3.5. Math.round lo redondea a 4 estrellas.
-  // El `|| 0` salva el caso en el que Laravel devuelve null.
+  // El `|| 0` salva el caso en el que Laravel devuelva null.
   const mediaEstrellas = Math.round(
     parseFloat(producto.reviews_avg_valoracion) || 0,
   );
@@ -32,9 +33,25 @@ const Producto = ({ producto }) => {
       <span className="text-xl font-bold text-primario">
         {formatearMoneda(producto.precio)}
       </span>
-      <Boton variante="primario" className="py-2 px-4 text-sm mr-5">
-        <i className="pi pi-shopping-cart mr-2"></i> Añadir
-      </Boton>
+
+      {/* Dos botones en un div con flex y gap-2 para separarlos un poco */}
+      <div className="flex items-center gap-2 mr-2">
+        {/* Botón del Ojo (Variante contorno para que sea secundario) */}
+        <Boton
+          variante="contorno"
+          className="py-2 px-3 text-sm hover:cursor-pointer"
+          evento={() =>
+            navegar(`/producto/${producto.id}`)
+          }
+        >
+          <i className="pi pi-eye text-lg"></i>
+        </Boton>
+
+        {/* Botón de Añadir producto al carrito */}
+        <Boton variante="primario" className="py-2 px-4 text-sm hover:cursor-pointer">
+          <i className="pi pi-shopping-cart mr-2"></i> Añadir
+        </Boton>
+      </div>
     </div>
   );
 
@@ -60,7 +77,7 @@ const Producto = ({ producto }) => {
             ({totalReviews} opiniones)
           </span>
         </div>
-        
+
         <p className="m-0 text-gray-600 line-clamp-2 text-sm mb-4">
           {producto.descripcion}
         </p>
