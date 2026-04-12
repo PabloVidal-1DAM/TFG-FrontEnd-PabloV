@@ -1,26 +1,24 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-// 1. Cambiamos useAPI por tu hook del Contexto
 import useContextProductos from "../hooks/useContextProductos.js";
 import { formatearMoneda } from "../functions/formatos.js";
 import Boton from "../ui/boton";
 import { ProgressSpinner } from "primereact/progressspinner";
+import ReviewsProducto from "./ReviewsProducto.jsx";
+import { Rating } from "primereact/rating";
 
 const DetalleProducto = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // 2. Extraemos el estado y la función directamente desde tu Proveedor
   const { productoSeleccionado, cargarProductoSeleccionado, cargando } =
     useContextProductos();
 
-  // 3. Al entrar en la página, le decimos al contexto: "Oye, cárgame este ID"
   useEffect(() => {
     cargarProductoSeleccionado(id);
     window.scrollTo(0, 0);
   }, [id]);
 
-  // 4. Como inicializaste el estado como un objeto vacío {}, comprobamos si ya tiene el 'id'
   if (cargando || !productoSeleccionado || !productoSeleccionado.id) {
     return (
       <div className="flex justify-center items-center py-32">
@@ -33,10 +31,13 @@ const DetalleProducto = () => {
     );
   }
 
-  // Un pequeño truco para no tener que renombrar todo el HTML de abajo
   const producto = productoSeleccionado;
 
-  // 5. La maquetación sigue exactamente igual
+  // Calculamos la media para mostrarla en la cabecera del detalle si queremos
+  const mediaEstrellas = Math.round(
+    parseFloat(producto.reviews_avg_valoracion) || 0,
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       <button
@@ -46,7 +47,7 @@ const DetalleProducto = () => {
         <i className="pi pi-arrow-left mr-2"></i> Volver al catálogo
       </button>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white p-8 rounded-2xl shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white p-8 rounded-2xl shadow-sm mb-12">
         {/* Lado Izquierdo: Imagen */}
         <div className="bg-gray-50 rounded-xl overflow-hidden flex items-center justify-center p-8">
           <img
@@ -74,15 +75,29 @@ const DetalleProducto = () => {
               ))}
           </div>
 
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
             {producto.nombre}
           </h1>
 
-          {/* Detalles extra como el Proveedor se podrían añadir por aquí */}
+          {/* Media de estrellas rápida debajo del título */}
+          <div className="flex items-center gap-2 mb-4">
+            <Rating
+              value={mediaEstrellas}
+              readOnly
+              cancel={false}
+              pt={{ onIcon: { className: "text-yellow-400" } }}
+            />
+            <span className="text-sm text-gray-500">
+              ({producto.reviews_count} opiniones)
+            </span>
+          </div>
+
           {producto.proveedor && (
-            <p className="text-gray-500 font-medium mb-2">
+            <p className="text-gray-500 font-medium mb-4">
               Vendido por:{" "}
-              <span className="text-primario">{producto.proveedor.nombre}</span>
+              <span className="text-primario font-bold">
+                {producto.proveedor.nombre}
+              </span>
             </p>
           )}
 
@@ -90,7 +105,7 @@ const DetalleProducto = () => {
             {formatearMoneda(producto.precio)}
           </p>
 
-          <p className="text-gray-600 text-lg leading-relaxed mb-8">
+          <p className="text-gray-600 text-lg leading-relaxed mb-8 border-l-4 border-terciario pl-4">
             {producto.descripcion}
           </p>
 
@@ -119,6 +134,8 @@ const DetalleProducto = () => {
           </div>
         </div>
       </div>
+      {/*La parte final es la sección para ver las reviews que dejan los usuarios a los productos */}
+      <ReviewsProducto producto={producto} />
     </div>
   );
 };

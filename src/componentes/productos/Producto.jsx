@@ -3,14 +3,13 @@ import { Card } from "primereact/card";
 import Boton from "../ui/boton";
 import { formatearMoneda } from "../functions/formatos";
 import { Rating } from "primereact/rating";
-import { useNavigate } from "react-router-dom"; // temporal, cambiar al proveedor de sesión cuando se tenga.
+import useContextSesion from "../hooks/useContextSesion";
 
 const Producto = ({ producto }) => {
   const urlImagen = `http://localhost:8095/storage/${producto.imagen_url}`;
-  const navegar = useNavigate();
+  const {navegar} = useContextSesion();
 
-  // parseFloat convierte "3.5000" a 3.5. Math.round lo redondea a 4 estrellas.
-  // El `|| 0` salva el caso en el que Laravel devuelva null.
+  // parseFloat convierte "3.5000" a 3.5. Math.round lo redondea a 4 estrellas y si no es 0 en caso de que Laravel devuelva null.
   const mediaEstrellas = Math.round(
     parseFloat(producto.reviews_avg_valoracion) || 0,
   );
@@ -63,14 +62,14 @@ const Producto = ({ producto }) => {
         header={cabecera}
         footer={pie}
         className="h-full w-full flex flex-col justify-between shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
-        pt={{ body: { className: "p-4" }, content: { className: "py-2" } }} // pt te permite "pasar a través" del componente y aplicar estilos o atributos a sus partes internas sin usar CSS global.
+        pt={{ body: { className: "p-4" }, content: { className: "py-2" } }} // pt permite "pasar a través" del componente y aplicar estilos o atributos a sus partes internas sin usar CSS global.
       >
         {/* Componente de prime react para mostrar el rating de los productos (las estrellas que se suelen ver). */}
         <div className="flex items-center gap-2 mb-3">
           <Rating
             value={mediaEstrellas}
-            readOnly // Solo lectura, no se puede votar aquí
-            cancel={false} // Quitamos el botón de limpiar voto
+            readOnly // Solo lectura, no se puede votar aquí ni ver el botón para limpiar voto.
+            cancel={false} 
             pt={{ onIcon: { className: "text-yellow-400" } }} // Estrellas doradas típicas.
           />
           <span className="text-xs text-gray-500 font-medium mt-1">

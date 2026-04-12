@@ -8,10 +8,12 @@ import Contenido from "./componentes/estructura/Contenido.jsx";
 import Rutas from "./componentes/estructura/Rutas.jsx";
 import Pie from "./componentes/estructura/Pie.jsx";
 import ProveedorProductos from "./componentes/context/ProveedorProductos.jsx";
+import ProveedorSesion from "./componentes/context/ProveedorSesion.jsx";
 
 function App() {
   return (
     <>
+    <ProveedorSesion>
       <Header />
       <Contenido>
         <ProveedorProductos>
@@ -19,6 +21,7 @@ function App() {
         </ProveedorProductos>
       </Contenido>
       <Pie />
+    </ProveedorSesion>
     </>
   )
 }
