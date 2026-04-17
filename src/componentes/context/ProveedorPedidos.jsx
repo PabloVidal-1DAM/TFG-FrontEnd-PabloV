@@ -79,12 +79,23 @@ const ProveedorPedidos = ({ children }) => {
     setCarritoCompra([]); 
   };
 
+  const totalArticulos = carritoCompra.reduce((acumulador, item) => {
+    return acumulador + item.cantidad;
+  }, 0);
+
+  // Calcula el precio total sumando (precio * cantidad) de cada producto
+  const precioTotal = carritoCompra.reduce((acumulador, item) => {
+    return acumulador + (parseFloat(item.precio) * item.cantidad);
+  }, 0);
+
   const datos = {
     carritoCompra,
     agregarAlCarrito,
     eliminarDelCarrito,
     disminuirCantidad,
-    vaciarCarrito
+    vaciarCarrito,
+    totalArticulos,
+    precioTotal
   };
   return (
     <contextoPedido.Provider value={datos}>{children}</contextoPedido.Provider>
