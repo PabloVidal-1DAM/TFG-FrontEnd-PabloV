@@ -8,13 +8,12 @@ import IconoCarrito from "./IconoCarrito.jsx";
 
 const Header = () => {
   const { totalArticulos } = useContextPedidos();
-  
+
   return (
     // Uso grid aquí para separar el logo de la navegación en 2 columnas.
     <header className="bg-primario shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 items-center py-4">
-          
           {/* Columna Izquierda: El logo */}
           <div className="flex items-center">
             <Link to={"/"}>
@@ -37,9 +36,10 @@ const Header = () => {
           {/* Usamos flex y justify-end para pegarlos a la derecha, y gap-6 para separarlos un poco */}
           <div className="flex items-center justify-end gap-6">
             <Menu />
-            <IconoCarrito totalArticulos={totalArticulos} />
+            <Link to={"/carrito"}>
+              <IconoCarrito totalArticulos={totalArticulos} />
+            </Link>
           </div>
-
         </div>
       </div>
     </header>

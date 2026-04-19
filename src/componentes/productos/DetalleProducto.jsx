@@ -6,10 +6,13 @@ import Boton from "../ui/boton";
 import { ProgressSpinner } from "primereact/progressspinner";
 import ReviewsProducto from "./ReviewsProducto.jsx";
 import { Rating } from "primereact/rating";
+import useContextPedidos from "../hooks/useContextPedidos.js"
 
 const DetalleProducto = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const { agregarAlCarrito } = useContextPedidos();
 
   const { productoSeleccionado, cargarProductoSeleccionado, cargando } =
     useContextProductos();
@@ -128,6 +131,7 @@ const DetalleProducto = () => {
             <Boton
               variante="primario"
               className="py-3 px-8 text-lg w-full md:w-auto"
+              evento={() =>{agregarAlCarrito(producto)}}
             >
               <i className="pi pi-shopping-cart mr-2"></i> Añadir al carrito
             </Boton>

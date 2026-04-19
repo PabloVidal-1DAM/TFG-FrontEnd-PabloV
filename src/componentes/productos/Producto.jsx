@@ -4,10 +4,12 @@ import Boton from "../ui/boton";
 import { formatearMoneda } from "../functions/formatos";
 import { Rating } from "primereact/rating";
 import useContextSesion from "../hooks/useContextSesion";
+import useContextPedidos from "../hooks/useContextPedidos";
 
 const Producto = ({ producto }) => {
   const urlImagen = `http://localhost:8095/storage/${producto.imagen_url}`;
   const {navegar} = useContextSesion();
+  const {agregarAlCarrito} = useContextPedidos();
 
   // parseFloat convierte "3.5000" a 3.5. Math.round lo redondea a 4 estrellas y si no es 0 en caso de que Laravel devuelva null.
   const mediaEstrellas = Math.round(
@@ -47,7 +49,7 @@ const Producto = ({ producto }) => {
         </Boton>
 
         {/* Botón de Añadir producto al carrito */}
-        <Boton variante="primario" className="py-2 px-4 text-sm hover:cursor-pointer">
+        <Boton variante="primario" className="py-2 px-4 text-sm hover:cursor-pointer" evento={() =>{agregarAlCarrito(producto)}}>
           <i className="pi pi-shopping-cart mr-2"></i> Añadir
         </Boton>
       </div>

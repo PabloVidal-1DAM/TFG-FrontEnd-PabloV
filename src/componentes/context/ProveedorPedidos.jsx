@@ -1,5 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
 
+/* Proveedor que se encargará de proveer a los componentes que lo necesiten todo lo que tenga que ver con los pedidos,
+he visto que también es necesario incluir al carrito de la compra, ya que tiene que ver mucho con la lógica de los pedidos. */
+
 const contextoPedido = createContext();
 const ProveedorPedidos = ({ children }) => {
   /* Si el usuario previamente ha interactuado con el carrito, se cargan desde el localStorage,
@@ -50,7 +53,7 @@ const ProveedorPedidos = ({ children }) => {
   const eliminarDelCarrito = (idProducto) => {
     // Se excluye del carrito el id del producto que el usuario seleccione.
     setCarritoCompra((carritoActual) => {
-      return carritoActual.filter((producto) =>{producto.id !== idProducto});
+      return carritoActual.filter((producto) =>producto.id !== idProducto);
     });
   };
 
@@ -60,7 +63,7 @@ const ProveedorPedidos = ({ children }) => {
       const producto = carritoActual.find((item) => item.id === idProducto);
 
       if (producto && producto.cantidad > 1) {
-        // Si hay más de 1, simplemente le restamos 1 a la cantidad
+        // Si hay más de 1, simplemente se le resta 1 a la cantidad
         return carritoActual.map((item) => {
           if (item.id === idProducto) {
             return { ...item, cantidad: item.cantidad - 1 };
@@ -68,8 +71,8 @@ const ProveedorPedidos = ({ children }) => {
           return item;
         });
       } else {
-        // Si solo quedaba 1 y el usuario le da a restar, lo borramos directamente
-        return carritoActual.filter((item) => item.id !== idProducto);
+        // Si la cantidad es 1 (o menos), se devuelve el carrito intacto sin borrar nada.
+        return carritoActual;
       }
     });
   };
