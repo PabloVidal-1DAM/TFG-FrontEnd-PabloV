@@ -1,10 +1,13 @@
 import React, { createContext, useEffect, useState } from "react";
+import useContextSesion from "../hooks/useContextSesion";
 
 /* Proveedor que se encargará de proveer a los componentes que lo necesiten todo lo que tenga que ver con los pedidos,
 he visto que también es necesario incluir al carrito de la compra, ya que tiene que ver mucho con la lógica de los pedidos. */
 
 const contextoPedido = createContext();
 const ProveedorPedidos = ({ children }) => {
+  const {ponerMensaje} = useContextSesion();
+
   /* Si el usuario previamente ha interactuado con el carrito, se cargan desde el localStorage,
        En caso de estar vacío, array vacío. */
   const carritoLocal = localStorage.getItem("carritoTetraBIOS-Local");
@@ -47,6 +50,7 @@ const ProveedorPedidos = ({ children }) => {
         return [...carritoActual, { ...producto, cantidad }];
       }
     });
+    ponerMensaje("exito", "Añadido al Carrito Correctamente")
   };
 
   // Eliminar un producto entero del carrito local.
@@ -55,6 +59,8 @@ const ProveedorPedidos = ({ children }) => {
     setCarritoCompra((carritoActual) => {
       return carritoActual.filter((producto) =>producto.id !== idProducto);
     });
+
+    ponerMensaje("info", "Producto eliminado del carrito");
   };
 
   // Disminuir la cantidad puesta de un item del carrito en 1.

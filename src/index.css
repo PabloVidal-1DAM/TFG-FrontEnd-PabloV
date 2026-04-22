@@ -86,3 +86,16 @@ body{
 .p-carousel-content{
   height: 500px;
 }
+
+/*Animación para el componente de mensajes*/
+@keyframes deslizar-toast {
+  0%   { transform: translateX(150%); opacity: 0; } /* Empieza fuera, a la derecha */
+  10%  { transform: translateX(0); opacity: 1; }    /* Entra rápido y frena */
+  90%  { transform: translateX(0); opacity: 1; }    /* Se queda quieta casi todo el tiempo */
+  100% { transform: translateX(150%); opacity: 0; } /* Se vuelve a esconder a la derecha */
+}
+
+.animacion-notificacion {
+  /* Ejecuta la animación en 3 segundos exactos */
+  animation: deslizar-toast 3s ease-in-out forwards; 
+}

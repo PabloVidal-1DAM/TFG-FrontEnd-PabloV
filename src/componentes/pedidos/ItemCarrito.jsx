@@ -10,7 +10,6 @@ const ItemCarrito = ({ item }) => {
   return (
     <>
       <div
-        key={item.id}
         className="flex flex-col sm:flex-row items-center gap-6 bg-white p-4 rounded-xl shadow-sm"
       >
         {/* Imagen */}

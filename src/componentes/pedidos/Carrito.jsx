@@ -14,7 +14,7 @@ const Carrito = () => {
   return (
     <>
       {carritoCompra.length === 0 ? (
-        // 1. SI EL CARRITO ESTÁ VACÍO
+        // 1. Si el carrito está vacío.
         <div className="max-w-3xl mx-auto px-4 py-32 flex flex-col items-center justify-center text-center">
           <i className="pi pi-shopping-cart text-6xl text-gray-200 mb-6"></i>
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
@@ -33,7 +33,7 @@ const Carrito = () => {
           </Boton>
         </div>
       ) : (
-        // 2. SI HAY PRODUCTOS EN EL CARRITO
+        // 2. Si existen items en el carrito.
         <div className="max-w-7xl mx-auto px-4 py-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-8 border-b pb-4">
             Tu Cesta de Compra

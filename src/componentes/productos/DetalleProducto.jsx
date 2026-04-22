@@ -130,7 +130,7 @@ const DetalleProducto = () => {
           <div className="flex gap-4">
             <Boton
               variante="primario"
-              className="py-3 px-8 text-lg w-full md:w-auto"
+              className="py-3 px-8 text-lg w-full md:w-auto hover:cursor-pointer"
               evento={() =>{agregarAlCarrito(producto)}}
             >
               <i className="pi pi-shopping-cart mr-2"></i> Añadir al carrito

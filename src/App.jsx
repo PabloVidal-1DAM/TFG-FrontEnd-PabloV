@@ -10,20 +10,22 @@ import Pie from "./componentes/estructura/Pie.jsx";
 import ProveedorProductos from "./componentes/context/ProveedorProductos.jsx";
 import ProveedorSesion from "./componentes/context/ProveedorSesion.jsx";
 import ProveedorPedidos from "./componentes/context/ProveedorPedidos.jsx";
+import Notificacion from "./componentes/ui/Notificacion.jsx";
 
 function App() {
   return (
     <>
       <ProveedorSesion>
-        <ProveedorPedidos>
-          <Header />
-          <Contenido>
-            <ProveedorProductos>
-              <Rutas />
-            </ProveedorProductos>
-          </Contenido>
-          <Pie />
-        </ProveedorPedidos>
+        <Notificacion />
+          <ProveedorPedidos>
+            <Header />
+            <Contenido>
+              <ProveedorProductos>
+                <Rutas />
+              </ProveedorProductos>
+            </Contenido>
+            <Pie />
+          </ProveedorPedidos>
       </ProveedorSesion>
     </>
   );
