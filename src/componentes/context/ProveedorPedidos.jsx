@@ -86,6 +86,7 @@ const ProveedorPedidos = ({ children }) => {
   // Vaciar el contenido de todo el carrito
   const vaciarCarrito = () => {
     setCarritoCompra([]); 
+    ponerMensaje("info", "Carrito Vaciado Correctamente");
   };
 
   const totalArticulos = carritoCompra.reduce((acumulador, item) => {

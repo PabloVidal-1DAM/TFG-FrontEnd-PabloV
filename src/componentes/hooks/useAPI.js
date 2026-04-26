@@ -5,6 +5,8 @@ const useAPI = () => {
     const urlAPI = "http://localhost:8095/api";
     const [cargando, setCargando] = useState(false);
 
+    // Función que sirve para traer todo lo de un endpoint o un objeto en específico por su id,
+    // dependiendo esto de si se pasa o no como parámetro a esta función.
     const obtenerDatos = async(endpoint, id = '') =>{
         setCargando(true);
         try{
