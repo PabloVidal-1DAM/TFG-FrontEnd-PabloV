@@ -14,6 +14,7 @@ const ProveedorSesion = ({ children }) => {
     usuario,
     signUp,
     login,
+    logout
   } = useAuth();
 
   // Estado que guarda una lista de mensajes, lo usará el componente para mostrar los mensajes.
@@ -67,6 +68,38 @@ const ProveedorSesion = ({ children }) => {
     }
   };
 
+    // 2. Función genérica para actualizar el estado global conforme el usuario escribe.
+  // Esto nos ahorra hacer un onChange diferente para cada input.
+  const actualizarDatosFormulario = (e) => {
+    setDatosSesion({
+      ...datosSesion, // Mantenemos lo que ya hubiera escrito
+      [e.target.name]: e.target.value // Actualizamos solo el campo que está tocando
+    });
+  };
+
+  // Función que se ejecuta al enviar el formulario
+const manejarLogin = (e) => {
+    e.preventDefault(); 
+    
+    // Chivato 1: Comprobamos si el formulario hace submit
+    console.log("🚀 1. ¡Se ha hecho clic en Entrar!"); 
+    
+    // Chivato 2: Comprobamos qué datos exactos tiene el estado ahora mismo
+    console.log("📦 2. Datos en el estado:", datosSesion);
+
+    // BLINDAJE: Extraemos de forma segura. Si algo es undefined, le ponemos un string vacío "" para que .trim() no explote.
+    const emailSeguro = datosSesion?.email || "";
+    const passwordSeguro = datosSesion?.password || "";
+
+    if (emailSeguro.trim() === "" || passwordSeguro.trim() === "") {
+      console.log("🛑 3. Validación fallida: Faltan datos.");
+      ponerMensaje("error", "Por favor, rellena todos los campos.");
+      return;
+    }
+
+    console.log("✅ 4. Validación superada. Llamando al backend...");
+    iniciarSesion();
+  };
   const datos = {
     // Estados para controlar los formularios de Inicio de sesion y registro.
     datosSesion,
@@ -85,6 +118,9 @@ const ProveedorSesion = ({ children }) => {
     registrarse,
     cerrarSesion,
     navegar,
+
+    actualizarDatosFormulario,
+    manejarLogin
   };
 
   return (
