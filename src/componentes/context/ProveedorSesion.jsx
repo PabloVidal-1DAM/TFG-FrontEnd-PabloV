@@ -1,49 +1,96 @@
-import React, { createContext, useState } from 'react'
-import useAPI from '../hooks/useAPI'
-import { useNavigate } from 'react-router-dom';
+import React, { createContext, useState } from "react";
+import useAPI from "../hooks/useAPI";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const contextoSesion = createContext();
 
-const ProveedorSesion = ({children}) => {
+const ProveedorSesion = ({ children }) => {
+  const navegar = useNavigate();
+  const {
+    datosSesion,
+    setDatosSesion,
+    sesionIniciada,
+    usuario,
+    signUp,
+    login,
+  } = useAuth();
 
-    // Aquí se guardarán los datos del usuario cuando inicie sesion
-    const [usuario, setUsuario] = useState(null);
+  // Estado que guarda una lista de mensajes, lo usará el componente para mostrar los mensajes.
+  const [mensajes, setMensajes] = useState([]);
 
-    const {obtenerDatos} = useAPI();
-    const navegar = useNavigate();
+  const ponerMensaje = (tipo, texto) => {
+    // He usado como identificador de cada mensaje para react al recorrerlos la fecha + número random.
+    const id = Date.now() + Math.random();
+    const nuevoMensaje = { id, tipo, texto };
 
-    // Estado que guarda una lista de mensajes, lo usará el componente para mostrar los mensajes.
-    const [mensajes, setMensajes] = useState([]);
+    // Se usa el callback para setear el estado y no saltarse algunos seteos que ocurran muy rápido.
+    setMensajes((mensajesActuales) => [...mensajesActuales, nuevoMensaje]);
 
-    const ponerMensaje = (tipo, texto) => {
-      // He usado como identificador de cada mensaje para react al recorrerlos la fecha + número random.
-      const id = Date.now() + Math.random(); 
-      const nuevoMensaje = { id, tipo, texto };
+    // A los tres segundos, el mensaje desaparece de la pantalla.
+    setTimeout(() => {
+      setMensajes((mensajesActuales) =>
+        // Se quita de la lista de mensaje el que caduca a los 3 segundos, dejando los demás.
+        mensajesActuales.filter((msg) => msg.id !== id),
+      );
+    }, 3200);
+  };
 
-      // Se usa el callback para setear el estado y no saltarse algunos seteos que ocurran muy rápido.
-      setMensajes((mensajesActuales) => [...mensajesActuales, nuevoMensaje]);
-      
-      // A los tres segundos, el mensaje desaparece de la pantalla.
-      setTimeout(() => {
-          setMensajes((mensajesActuales) => 
-              // Se quita de la lista de mensaje el que caduca a los 3 segundos, dejando los demás.
-              mensajesActuales.filter((msg) => msg.id !== id)
-          );
-      }, 3200); 
+  const iniciarSesion = async () => {
+    try {
+      const respuesta = await login();
+
+      ponerMensaje("exito", `Bienvenido, ${respuesta.user.name}`);
+      navegar(-1);
+    } catch (error) {
+      ponerMensaje("error", `Error al iniciar sesion: ${error.message}`);
     }
+  };
 
-    const datos = {
-        navegar,
-        mensajes,    
-        ponerMensaje   
-    };
+  const registrarse = async () => {
+    try {
+      await signUp();
+      ponerMensaje("exito", `¡Cuenta creada con exito!`);
+      navegar("/");
+    } catch (error) {
+      ponerMensaje("error", `Error al registarse: ${error.message}`);
+    }
+  };
+
+  const cerrarSesion = async () => {
+    try {
+      await logout();
+      ponerMensaje("info", "Has cerrado sesión correctamente.");
+      navegar("/");
+    } catch (error) {
+      ponerMensaje("error", `Error al cerrar sesión: ${error.message}`);
+    }
+  };
+
+  const datos = {
+    // Estados para controlar los formularios de Inicio de sesion y registro.
+    datosSesion,
+    setDatosSesion,
+
+    // Información del usuario logueado en la sesión actual.
+    sesionIniciada,
+    usuario,
+
+    // Mensajes que puedan ir ocurriendo durante la sesión.
+    mensajes,
+    ponerMensaje,
+
+    // Las funciones que ejecutarán los botones "Enviar" de los formularios y la nevgación de toda la web.
+    iniciarSesion,
+    registrarse,
+    cerrarSesion,
+    navegar,
+  };
 
   return (
-    <contextoSesion.Provider value={datos}>
-        {children}
-    </contextoSesion.Provider>
-  )
-}
+    <contextoSesion.Provider value={datos}>{children}</contextoSesion.Provider>
+  );
+};
 
 export default ProveedorSesion;
-export {contextoSesion};
+export { contextoSesion };
