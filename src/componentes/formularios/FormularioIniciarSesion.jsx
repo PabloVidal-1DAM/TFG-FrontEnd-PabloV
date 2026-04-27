@@ -1,28 +1,39 @@
-import {React, useState} from "react";
+import React from "react";
 import Boton from "../ui/boton";
 import useContextSesion from "../hooks/useContextSesion";
 
 const FormularioIniciarSesion = () => {
-  const { ponerMensaje } = useContextSesion();
+  // 1. Extraemos todo el arsenal que preparamos en el Proveedor
+  const { 
+    datosSesion, 
+    setDatosSesion, 
+    alIniciarSesion, 
+    ponerMensaje 
+  } = useContextSesion();
 
-  // Estados para guardar lo que escribe el usuario
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // 2. Función genérica para actualizar el estado global conforme el usuario escribe.
+  // Esto nos ahorra hacer un onChange diferente para cada input.
+  const manejarCambioInput = (e) => {
+    setDatosSesion({
+      ...datosSesion, // Mantenemos lo que ya hubiera escrito
+      [e.target.name]: e.target.value // Actualizamos solo el campo que está tocando
+    });
+  };
 
   // Función que se ejecuta al enviar el formulario
   const manejarLogin = (e) => {
     e.preventDefault(); // Evita que la página recargue de golpe
 
-    // 1. Validación básica en frontend
-    if (email.trim() === "" || password.trim() === "") {
+    // Validación básica en frontend leyendo desde el estado global
+    if (datosSesion.email.trim() === "" || datosSesion.password.trim() === "") {
       ponerMensaje("error", "Por favor, rellena todos los campos.");
       return;
     }
 
-    // 2. Simulacro temporal (Aquí irá tu petición a Laravel)
-    ponerMensaje("info", "Conectando con el servidor...");
-    console.log("Intentando iniciar sesión con:", email, password);
+    // 3. ¡Disparamos la petición real al backend!
+    alIniciarSesion();
   };
+
   return (
     <form onSubmit={manejarLogin} className="space-y-6">
       {/* Campo Email */}
@@ -34,8 +45,9 @@ const FormularioIniciarSesion = () => {
           <i className="pi pi-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email" /* <-- IMPORTANTE: el name debe coincidir con la llave del objeto en datosSesion */
+            value={datosSesion.email}
+            onChange={manejarCambioInput}
             className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-primario focus:ring-1 focus:ring-primario focus:bg-white transition-all"
             placeholder="tu@email.com"
           />
@@ -57,8 +69,9 @@ const FormularioIniciarSesion = () => {
           <i className="pi pi-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password" /* <-- IMPORTANTE */
+            value={datosSesion.password}
+            onChange={manejarCambioInput}
             className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-primario focus:ring-1 focus:ring-primario focus:bg-white transition-all"
             placeholder="••••••••"
           />
