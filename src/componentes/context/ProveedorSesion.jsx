@@ -71,18 +71,16 @@ const ProveedorSesion = ({ children }) => {
     // 2. Función genérica para actualizar el estado global conforme el usuario escribe.
   // Esto nos ahorra hacer un onChange diferente para cada input.
   const actualizarDatosFormulario = (e) => {
+    const {name, value} = e.target;
     setDatosSesion({
-      ...datosSesion, // Mantenemos lo que ya hubiera escrito
-      [e.target.name]: e.target.value // Actualizamos solo el campo que está tocando
+      ...datosSesion, 
+      [name]: value
     });
   };
 
   // Función que se ejecuta al enviar el formulario
 const manejarLogin = (e) => {
     e.preventDefault(); 
-    
-    // Chivato 1: Comprobamos si el formulario hace submit
-    console.log("🚀 1. ¡Se ha hecho clic en Entrar!"); 
     
     // Chivato 2: Comprobamos qué datos exactos tiene el estado ahora mismo
     console.log("📦 2. Datos en el estado:", datosSesion);

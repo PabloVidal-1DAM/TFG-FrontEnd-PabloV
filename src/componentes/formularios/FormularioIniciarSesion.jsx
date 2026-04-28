@@ -59,7 +59,6 @@ const FormularioIniciarSesion = () => {
         tipo="submit"
         variante="primario"
         className="w-full py-4 text-lg mt-4 font-bold shadow-lg shadow-primario/30 hover:cursor-pointer"
-        evento={manejarLogin}
       >
         Entrar <i className="pi pi-sign-in ml-2"></i>
       </Boton>
