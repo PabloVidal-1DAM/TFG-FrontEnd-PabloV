@@ -1,10 +1,10 @@
 import React from "react";
 import { Card } from "primereact/card";
 import Boton from "../ui/boton";
-import { formatearMoneda } from "../functions/formatos";
+import { formatearMoneda } from "../../functions/formatos";
 import { Rating } from "primereact/rating";
-import useContextSesion from "../hooks/useContextSesion";
-import useContextPedidos from "../hooks/useContextPedidos";
+import useContextSesion from "../../hooks/useContextSesion";
+import useContextPedidos from "../../hooks/useContextPedidos";
 
 const Producto = ({ producto }) => {
   const urlImagen = `http://localhost:8095/storage/${producto.imagen_url}`;

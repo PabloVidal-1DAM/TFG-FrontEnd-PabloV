@@ -1,7 +1,8 @@
 import React, { createContext, useState } from "react";
-import useAPI from "../hooks/useAPI";
+import useAPI from "../../hooks/useAPI";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
+import { validarEmail, validarPassword } from "../../utils/validaciones";
 
 const contextoSesion = createContext();
 
@@ -14,7 +15,7 @@ const ProveedorSesion = ({ children }) => {
     usuario,
     signUp,
     login,
-    logout
+    logout,
   } = useAuth();
 
   // Estado que guarda una lista de mensajes, lo usará el componente para mostrar los mensajes.
@@ -68,34 +69,41 @@ const ProveedorSesion = ({ children }) => {
     }
   };
 
-    // 2. Función genérica para actualizar el estado global conforme el usuario escribe.
+  // 2. Función genérica para actualizar el estado global conforme el usuario escribe.
   // Esto nos ahorra hacer un onChange diferente para cada input.
   const actualizarDatosFormulario = (e) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     setDatosSesion({
-      ...datosSesion, 
-      [name]: value
+      ...datosSesion,
+      [name]: value,
     });
   };
 
   // Función que se ejecuta al enviar el formulario
-const manejarLogin = (e) => {
-    e.preventDefault(); 
-    
+  const manejarLogin = (e) => {
+    e.preventDefault();
+
     // Chivato 2: Comprobamos qué datos exactos tiene el estado ahora mismo
     console.log("📦 2. Datos en el estado:", datosSesion);
 
-    // BLINDAJE: Extraemos de forma segura. Si algo es undefined, le ponemos un string vacío "" para que .trim() no explote.
-    const emailSeguro = datosSesion?.email || "";
-    const passwordSeguro = datosSesion?.password || "";
+    // Se validan que los datos puestos son los correctos.
+    const errorEmail = validarEmail(datosSesion?.email);
+    const errorPassword = validarPassword(datosSesion?.password);
 
-    if (emailSeguro.trim() === "" || passwordSeguro.trim() === "") {
-      console.log("🛑 3. Validación fallida: Faltan datos.");
-      ponerMensaje("error", "Por favor, rellena todos los campos.");
+    // 2. Comprobamos si alguna nos ha devuelto un texto de error
+    if (errorEmail) {
+      ponerMensaje("error", errorEmail);
+      return; // Cortamos la ejecución
+    }
+
+    if (errorPassword) {
+      ponerMensaje("error", errorPassword);
       return;
     }
 
-    console.log("✅ 4. Validación superada. Llamando al backend...");
+    // 3. Si llegamos aquí, ambos devolvieron null. ¡Luz verde!
+    iniciarSesion();
+
     iniciarSesion();
   };
   const datos = {
@@ -118,7 +126,7 @@ const manejarLogin = (e) => {
     navegar,
 
     actualizarDatosFormulario,
-    manejarLogin
+    manejarLogin,
   };
 
   return (

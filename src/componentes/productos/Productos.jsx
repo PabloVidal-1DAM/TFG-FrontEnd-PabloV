@@ -1,5 +1,5 @@
 import React from "react";
-import useContextProductos from "../hooks/useContextProductos.js";
+import useContextProductos from "../../hooks/useContextProductos.js";
 import Producto from "./Producto.jsx";
 import { ProgressSpinner } from "primereact/progressspinner";
 import Paginador from "../ui/Paginador.jsx";

@@ -1,6 +1,6 @@
 import React from "react";
-import { formatearMoneda } from "../functions/formatos";
-import useContextPedidos from "../hooks/useContextPedidos";
+import { formatearMoneda } from "../../functions/formatos";
+import useContextPedidos from "../../hooks/useContextPedidos";
 
 const ItemCarrito = ({ item }) => {
   const {

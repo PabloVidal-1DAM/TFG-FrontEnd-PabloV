@@ -1,5 +1,5 @@
 import React from "react";
-import useContextSesion from "../hooks/useContextSesion"; 
+import useContextSesion from "../../hooks/useContextSesion"; 
 import Mensaje from "./Mensaje";
 
 // Componente creado para mostrar visualmente los errores y/o mensajes informativos

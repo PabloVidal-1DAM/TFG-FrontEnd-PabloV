@@ -1,7 +1,7 @@
 import React from "react";
-import { formatearMoneda } from "../functions/formatos";
+import { formatearMoneda } from "../../functions/formatos";
 import Boton from "../ui/boton";
-import useContextPedidos from "../hooks/useContextPedidos";
+import useContextPedidos from "../../hooks/useContextPedidos";
 
 const ResumenCarrito = () => {
   const { vaciarCarrito, precioTotal } = useContextPedidos();

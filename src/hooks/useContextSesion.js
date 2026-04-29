@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import {contextoSesion} from "../context/ProveedorSesion";
+import {contextoSesion} from "../componentes/context/ProveedorSesion";
 const useContextSesion = () => {
   const contexto = useContext(contextoSesion);
 

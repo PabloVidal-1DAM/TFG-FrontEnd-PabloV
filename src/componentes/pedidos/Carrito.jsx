@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import useContextPedidos from "../hooks/useContextPedidos";
+import useContextPedidos from "../../hooks/useContextPedidos";
 import Boton from "../ui/boton";
-import useContextSesion from "../hooks/useContextSesion";
+import useContextSesion from "../../hooks/useContextSesion";
 import ItemCarrito from "./ItemCarrito";
 import ResumenCarrito from "./ResumenCarrito";
 

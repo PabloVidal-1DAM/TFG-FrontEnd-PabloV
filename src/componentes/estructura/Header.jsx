@@ -1,5 +1,5 @@
 import React from "react";
-import useContextPedidos from "../hooks/useContextPedidos.js";
+import useContextPedidos from "../../hooks/useContextPedidos.js";
 import logoHeader from "../../assets/logoHeader.png";
 import logoMovil from "../../assets/logoMovil.png";
 import Menu from "./Menu.jsx";

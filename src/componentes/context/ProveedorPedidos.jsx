@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import useContextSesion from "../hooks/useContextSesion";
+import useContextSesion from "../../hooks/useContextSesion";
 
 /* Proveedor que se encargará de proveer a los componentes que lo necesiten todo lo que tenga que ver con los pedidos,
 he visto que también es necesario incluir al carrito de la compra, ya que tiene que ver mucho con la lógica de los pedidos. */

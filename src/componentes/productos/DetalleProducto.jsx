@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import useContextProductos from "../hooks/useContextProductos.js";
-import { formatearMoneda } from "../functions/formatos.js";
+import useContextProductos from "../../hooks/useContextProductos.js";
+import { formatearMoneda } from "../../functions/formatos.js";
 import Boton from "../ui/boton";
 import { ProgressSpinner } from "primereact/progressspinner";
 import ReviewsProducto from "./ReviewsProducto.jsx";
 import { Rating } from "primereact/rating";
-import useContextPedidos from "../hooks/useContextPedidos.js"
+import useContextPedidos from "../../hooks/useContextPedidos.js"
 
 const DetalleProducto = () => {
   const { id } = useParams();

@@ -3,7 +3,7 @@ import { Carousel } from "primereact/carousel";
 import datosCarousel from "../../assets/contenidoCarrousel.json";
 import Boton from "../ui/boton";
 import Producto from "../productos/Producto.jsx";
-import useContextProductos from "../hooks/useContextProductos.js";
+import useContextProductos from "../../hooks/useContextProductos.js";
 const LandingPage = () => {
 
   const {productosDestacados} = useContextProductos();

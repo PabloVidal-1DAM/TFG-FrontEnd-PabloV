@@ -1,6 +1,6 @@
 import React from "react";
 import Boton from "../ui/boton";
-import useContextSesion from "../hooks/useContextSesion";
+import useContextSesion from "../../hooks/useContextSesion";
 
 const FormularioIniciarSesion = () => {
   // 1. Extraemos todo el arsenal que preparamos en el Proveedor
@@ -11,7 +11,7 @@ const FormularioIniciarSesion = () => {
   } = useContextSesion();
 
   return (
-    <form onSubmit={manejarLogin} className="space-y-6">
+    <form onSubmit={manejarLogin} noValidate className="space-y-6">
       {/* Campo Email */}
       <div className="flex flex-col gap-2">
         <label className="font-bold text-gray-700 text-sm">

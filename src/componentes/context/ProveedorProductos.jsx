@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import useAPI from "../hooks/useAPI";
+import useAPI from "../../hooks/useAPI";
 
 const contextoProductos = createContext();
 const ProveedorProductos = ({ children }) => {
