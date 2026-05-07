@@ -54,9 +54,17 @@ const MenuMovil = () => {
             <Link
               to="/login"
               onClick={() => setMenuAbierto(false)}
-              className="bg-terciario text-primario text-center font-bold px-4 py-3 rounded-md hover:bg-white transition block w-full"
+              className="bg-terciario text-primario mb-4 text-center font-bold px-4 py-3 rounded-md hover:bg-white transition block w-full"
             >
               Iniciar Sesión
+            </Link>
+
+            <Link
+              to="/signup"
+              onClick={() => setMenuAbierto(false)}
+              className="bg-terciario text-primario text-center font-bold px-4 py-3 rounded-md hover:bg-white transition block w-full"
+            >
+              Registrarse
             </Link>
           </div>
         </div>

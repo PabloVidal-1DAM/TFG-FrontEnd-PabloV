@@ -9,6 +9,7 @@ const useAuth = () => {
     email: "",
     password: "",
     nombre: "",
+    password_confirmation: ""
   };
 
   // Aquí se guardarán los datos del usuario cuando inicie sesion
@@ -16,6 +17,7 @@ const useAuth = () => {
   const [usuario, setUsuario] = useState({});
   const [sesionIniciada, setSesionIniciada] = useState(false);
 
+  console.log(usuario);
   const login = async () => {
     try {
       const respuesta = await enviarDatos("user/login", {

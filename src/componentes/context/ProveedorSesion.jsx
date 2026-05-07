@@ -2,7 +2,7 @@ import React, { createContext, useState } from "react";
 import useAPI from "../../hooks/useAPI";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import { validarEmail, validarPassword } from "../../utils/validaciones";
+import { validarEmail, validarPassword, validarNombre, validarConfirmacion } from "../../utils/validaciones";
 
 const contextoSesion = createContext();
 
@@ -106,6 +106,24 @@ const ProveedorSesion = ({ children }) => {
 
     iniciarSesion();
   };
+
+  const manejarRegistro = (e) => {
+    e.preventDefault(); 
+
+    const errorNombre = validarNombre(datosSesion?.nombre);
+    const errorEmail = validarEmail(datosSesion?.email);
+    const errorPassword = validarPassword(datosSesion?.password);
+    const errorConfirmacion = validarConfirmacion(datosSesion?.password, datosSesion?.password_confirmation);
+
+    if (errorNombre) { ponerMensaje("error", errorNombre); return; }
+    if (errorEmail) { ponerMensaje("error", errorEmail); return; }
+    if (errorPassword) { ponerMensaje("error", errorPassword); return; }
+    if (errorConfirmacion) { ponerMensaje("error", errorConfirmacion); return; }
+
+    // Si todo está OK, llamamos al backend
+    registrarse();
+  };
+
   const datos = {
     // Estados para controlar los formularios de Inicio de sesion y registro.
     datosSesion,
@@ -127,6 +145,7 @@ const ProveedorSesion = ({ children }) => {
 
     actualizarDatosFormulario,
     manejarLogin,
+    manejarRegistro
   };
 
   return (
