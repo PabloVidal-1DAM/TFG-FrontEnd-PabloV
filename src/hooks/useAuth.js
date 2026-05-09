@@ -1,23 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import useAPI from "./useAPI";
 
-/* Hook personalizado que lleva toda la lógica de las acciones de sesión, así, si mañana quisiese cambiar a otra tecnología
-para hacer las peticiones, solo tendría que centrarme aquí, ya que los proveedores beben de este hook para hacerlo. */
 const useAuth = () => {
-  const { obtenerDatos, enviarDatos } = useAPI();
-  const datosDeSesion = {
-    email: "",
-    password: "",
-    nombre: "",
-    password_confirmation: ""
-  };
+  const { enviarDatos } = useAPI();
+  const datosDeSesionInicial = { email: "", password: "", nombre: "", password_confirmation: "" };
 
-  // Aquí se guardarán los datos del usuario cuando inicie sesion
-  const [datosSesion, setDatosSesion] = useState(datosDeSesion);
-  const [usuario, setUsuario] = useState({});
-  const [sesionIniciada, setSesionIniciada] = useState(false);
+  // Al arrancar, intentamos leer el usuario del localStorage. 
+  // Si existe, lo convertimos de texto a objeto. Si no, objeto vacío.
+  const [usuario, setUsuario] = useState(() => {
+    const userGuardado = localStorage.getItem("user_tetra");
+    return userGuardado ? JSON.parse(userGuardado) : {};
+  });
 
-  console.log(usuario);
+  // La sesión está iniciada si el objeto usuario tiene algo (por ejemplo, un id)
+  const [sesionIniciada, setSesionIniciada] = useState(!!usuario.id);
+  const [datosSesion, setDatosSesion] = useState(datosDeSesionInicial);
+
   const login = async () => {
     try {
       const respuesta = await enviarDatos("user/login", {
@@ -25,11 +23,14 @@ const useAuth = () => {
         password: datosSesion.password,
       });
 
-      // Si Laravel nos da el OK, guardamos al usuario en el estado local del hook
-      // (Ajusta 'respuesta.user' dependiendo de cómo lo devuelva tu controlador de Laravel)
+      // 1. Guardamos el TOKEN (como siempre)
+      localStorage.setItem("token_tetra", respuesta.token);
+      
+      // 2. Guardamos el OBJETO USUARIO convertido a texto JSON
+      localStorage.setItem("user_tetra", JSON.stringify(respuesta.user));
+
       setUsuario(respuesta.user);
       setSesionIniciada(true);
-
       return respuesta;
     } catch (error) {
       throw error;
@@ -42,10 +43,14 @@ const useAuth = () => {
         name: datosSesion.nombre,
         email: datosSesion.email,
         password: datosSesion.password,
-        password_confirmation: datosSesion.password, // Laravel suele pedir confirmación por seguridad
+        password_confirmation: datosSesion.password_confirmation,
       });
 
-      setDatosSesion(datosDeSesion);
+      localStorage.setItem("token_tetra", respuesta.token);
+      localStorage.setItem("user_tetra", JSON.stringify(respuesta.user));
+
+      setUsuario(respuesta.user);
+      setSesionIniciada(true);
       return respuesta;
     } catch (error) {
       throw error;
@@ -55,28 +60,20 @@ const useAuth = () => {
   const logout = async () => {
     try {
       await enviarDatos("user/logout", {});
+    } catch (e) {
+      // Si el logout falla (ej: token caducado), seguimos adelante para limpiar el front
+    } finally {
+      // Limpiamos TODO el localStorage
+      localStorage.removeItem("token_tetra");
+      localStorage.removeItem("user_tetra");
       
-      // Limpiamos todos los estados de React que tenian que ver con la sesion.
       setUsuario({});
       setSesionIniciada(false);
       setDatosSesion(datosDeSesionInicial);
-      
-      return true;
-    } catch (error) {
-      throw error;
     }
   };
 
-  return {
-    login,
-    signUp,
-    logout,
-    usuario,
-    sesionIniciada,
-    // Estados para los formularios de registro y logeo.
-    datosSesion,
-    setDatosSesion
-  };
+  return { login, signUp, logout, usuario, sesionIniciada, datosSesion, setDatosSesion };
 };
 
 export default useAuth;

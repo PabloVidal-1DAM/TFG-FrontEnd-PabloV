@@ -43,7 +43,7 @@ const ProveedorSesion = ({ children }) => {
       const respuesta = await login();
 
       ponerMensaje("exito", `Bienvenido, ${respuesta.user.name}`);
-      navegar(-1);
+      navegar("/catalogo");
     } catch (error) {
       ponerMensaje("error", `Error al iniciar sesion: ${error.message}`);
     }

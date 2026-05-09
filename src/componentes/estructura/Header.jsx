@@ -5,6 +5,7 @@ import logoMovil from "../../assets/logoMovil.png";
 import Menu from "./Menu.jsx";
 import { Link } from "react-router-dom";
 import IconoCarrito from "./IconoCarrito.jsx";
+import IconoUsuario from "../ui/IconoUsuario.jsx";
 
 const Header = () => {
   const { totalArticulos } = useContextPedidos();
@@ -36,6 +37,7 @@ const Header = () => {
           {/* Usamos flex y justify-end para pegarlos a la derecha, y gap-6 para separarlos un poco */}
           <div className="flex items-center justify-end gap-6">
             <Menu />
+            <IconoUsuario />
             <Link to={"/carrito"}>
               <IconoCarrito totalArticulos={totalArticulos} />
             </Link>

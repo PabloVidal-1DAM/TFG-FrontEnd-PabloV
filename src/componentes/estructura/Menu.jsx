@@ -1,8 +1,11 @@
 import { React } from "react";
 import { NavLink, Link } from "react-router-dom";
 import MenuMovil from "./MenuMovil";
+import useContextSesion from "../../hooks/useContextSesion";
+import Boton from "../ui/boton";
 
 const Menu = () => {
+  const { sesionIniciada, cerrarSesion } = useContextSesion();
   return (
     <>
       {/* MENÚ DE ESCRITORIO (Oculto en móvil, visible en md)*/}
@@ -42,6 +45,13 @@ const Menu = () => {
         >
           Registrarse
         </Link>
+        <Boton
+          evento={cerrarSesion}
+          variante="peligro" 
+          className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 hover:font-bold transition"
+        >
+        <i className="pi pi-sign-out ml-1"></i>
+        </Boton>
       </nav>
       {/*MENÚ LATERAL MÓVIL (He usado el sidebar de PrimeReact)*/}
       <MenuMovil />
