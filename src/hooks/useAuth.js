@@ -2,7 +2,7 @@ import { useState } from "react";
 import useAPI from "./useAPI";
 
 const useAuth = () => {
-  const { enviarDatos } = useAPI();
+  const { enviarDatos, obtenerDatos } = useAPI();
   const datosDeSesionInicial = { email: "", password: "", nombre: "", password_confirmation: "" };
 
   // Al arrancar, intentamos leer el usuario del localStorage. 
@@ -24,7 +24,7 @@ const useAuth = () => {
       });
 
       // 1. Guardamos el TOKEN (como siempre)
-      localStorage.setItem("token_tetra", respuesta.token);
+      localStorage.setItem("token_usuario", respuesta.token);
       
       // 2. Guardamos el OBJETO USUARIO convertido a texto JSON
       localStorage.setItem("user_tetra", JSON.stringify(respuesta.user));
@@ -46,7 +46,7 @@ const useAuth = () => {
         password_confirmation: datosSesion.password_confirmation,
       });
 
-      localStorage.setItem("token_tetra", respuesta.token);
+      localStorage.setItem("token_usuario", respuesta.token);
       localStorage.setItem("user_tetra", JSON.stringify(respuesta.user));
 
       setUsuario(respuesta.user);
@@ -59,12 +59,12 @@ const useAuth = () => {
 
   const logout = async () => {
     try {
-      await enviarDatos("user/logout", {});
+      await obtenerDatos("user/logout");
     } catch (e) {
-      // Si el logout falla (ej: token caducado), seguimos adelante para limpiar el front
+      throw error;
     } finally {
       // Limpiamos TODO el localStorage
-      localStorage.removeItem("token_tetra");
+      localStorage.removeItem("token_usuario");
       localStorage.removeItem("user_tetra");
       
       setUsuario({});

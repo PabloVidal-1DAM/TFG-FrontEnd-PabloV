@@ -6,7 +6,7 @@ const IconoUsuario = ({ esMovil = false }) => {
   const { sesionIniciada, usuario } = useContextSesion();
 
   // Si estamos en el menú móvil y NO hay sesión, no pintamos nada 
-  // (para no duplicar los botones grandes que ya tienes abajo)
+  // (para no duplicar los botones grandes que ya tienes abajo).
   if (esMovil && !sesionIniciada) return null;
 
   return (
@@ -15,7 +15,7 @@ const IconoUsuario = ({ esMovil = false }) => {
         <i className={`pi pi-user ${esMovil ? 'text-xl p-1' : 'text-lg'}`}></i>
       </div>
       
-      {/* Si es móvil, lo mostramos siempre (block). Si es PC, lo ocultamos en pantallas pequeñas (hidden sm:block) */}
+      {/* Si se usa en el menú móvil se muestrea siempre. Si es PC, se oculta en pantallas pequeñas (hidden sm:block). */}
       <div className={esMovil ? "block" : "hidden sm:block"}>
         {sesionIniciada ? (
           <span className={`font-bold tracking-wide cursor-default ${esMovil ? 'text-xl' : 'text-sm'}`}>

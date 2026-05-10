@@ -16,7 +16,7 @@ const MenuMovil = () => {
 
   return (
     <>
-      <div className="flex md:hidden justify-end">
+      <div className="flex min-[896px]:hidden justify-end">
         <button
           onClick={() => setMenuAbierto(true)}
           className="text-white hover:text-terciario transition p-2 focus:outline-none"

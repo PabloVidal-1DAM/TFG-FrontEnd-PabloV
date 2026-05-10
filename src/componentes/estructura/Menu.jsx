@@ -9,7 +9,7 @@ const Menu = () => {
   return (
     <>
       {/* MENÚ DE ESCRITORIO (Oculto en móvil, visible en md)*/}
-      <nav className="hidden md:flex justify-end items-center space-x-8">
+      <nav className="hidden min-[896px]:flex justify-end items-center space-x-8">
         <NavLink
           to="/catalogo"
           className={({ isActive }) =>

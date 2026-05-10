@@ -66,6 +66,7 @@ const ProveedorSesion = ({ children }) => {
       navegar("/");
     } catch (error) {
       ponerMensaje("error", `Error al cerrar sesión: ${error.message}`);
+      navegar("/");
     }
   };
 
