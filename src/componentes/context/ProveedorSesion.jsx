@@ -21,7 +21,7 @@ const ProveedorSesion = ({ children }) => {
   // Estado que guarda una lista de mensajes, lo usará el componente para mostrar los mensajes.
   const [mensajes, setMensajes] = useState([]);
 
-  const [erroresFormulario, setErroresFomrulario] = useState(null);
+  const [erroresFormulario, setErroresFormulario] = useState({});
 
   const ponerMensaje = (tipo, texto) => {
     // He usado como identificador de cada mensaje para react al recorrerlos la fecha + número random.
@@ -80,6 +80,11 @@ const ProveedorSesion = ({ children }) => {
       ...datosSesion,
       [name]: value,
     });
+
+    setErroresFormulario({
+      ...erroresFormulario, 
+      [name]: null
+    });
   };
 
   // Función que se ejecuta al enviar el formulario
@@ -92,6 +97,8 @@ const ProveedorSesion = ({ children }) => {
     // Se validan que los datos puestos son los correctos.
     const errorEmail = validarEmail(datosSesion?.email);
     const errorPassword = validarPassword(datosSesion?.password);
+
+    setErroresFormulario({email: errorEmail, password: errorPassword})
 
     // 2. Comprobamos si alguna nos ha devuelto un texto de error
     if (errorEmail) {
@@ -119,6 +126,13 @@ const ProveedorSesion = ({ children }) => {
     const errorPassword = validarPassword(datosSesion?.password);
     const errorConfirmacion = validarConfirmacion(datosSesion?.password, datosSesion?.password_confirmation);
 
+    setErroresFormulario({
+      nombre: errorNombre,
+      email: errorEmail,
+      password: errorPassword,
+      password_confirmation: errorConfirmacion
+    });
+
     if (errorNombre) { ponerMensaje("error", errorNombre); return; }
     if (errorEmail) { ponerMensaje("error", errorEmail); return; }
     if (errorPassword) { ponerMensaje("error", errorPassword); return; }
@@ -140,6 +154,7 @@ const ProveedorSesion = ({ children }) => {
     // Mensajes que puedan ir ocurriendo durante la sesión.
     mensajes,
     ponerMensaje,
+    erroresFormulario,
 
     // Las funciones que ejecutarán los botones "Enviar" de los formularios y la nevgación de toda la web.
     iniciarSesion,
