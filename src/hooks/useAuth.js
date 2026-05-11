@@ -40,7 +40,7 @@ const useAuth = () => {
   const signUp = async () => {
     try {
       const respuesta = await enviarDatos("user/register", {
-        name: datosSesion.nombre,
+        nombre: datosSesion.nombre,
         email: datosSesion.email,
         password: datosSesion.password,
         password_confirmation: datosSesion.password_confirmation,

@@ -21,6 +21,8 @@ const ProveedorSesion = ({ children }) => {
   // Estado que guarda una lista de mensajes, lo usará el componente para mostrar los mensajes.
   const [mensajes, setMensajes] = useState([]);
 
+  const [erroresFormulario, setErroresFomrulario] = useState(null);
+
   const ponerMensaje = (tipo, texto) => {
     // He usado como identificador de cada mensaje para react al recorrerlos la fecha + número random.
     const id = Date.now() + Math.random();
@@ -110,6 +112,7 @@ const ProveedorSesion = ({ children }) => {
 
   const manejarRegistro = (e) => {
     e.preventDefault(); 
+    console.log("📝 Intentando registrar con:", datosSesion);
 
     const errorNombre = validarNombre(datosSesion?.nombre);
     const errorEmail = validarEmail(datosSesion?.email);
