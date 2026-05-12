@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useAPI from "./useAPI";
 
+// Hook personalizado que contiene toda la lógica del registro e inicio de sesión de mi aplicación web.
 const useAuth = () => {
   const { enviarDatos, obtenerDatos } = useAPI();
   const datosDeSesionInicial = { email: "", password: "", nombre: "", password_confirmation: "" };
@@ -23,10 +24,10 @@ const useAuth = () => {
         password: datosSesion.password,
       });
 
-      // 1. Guardamos el TOKEN (como siempre)
+      // Guarda el TOKEN para usarlo en futuras peticiones.
       localStorage.setItem("token_usuario", respuesta.token);
       
-      // 2. Guardamos el OBJETO USUARIO convertido a texto JSON
+      // Guarda el OBJETO usuario convertido a texto JSON.
       localStorage.setItem("user_tetra", JSON.stringify(respuesta.user));
 
       setUsuario(respuesta.user);
@@ -39,6 +40,7 @@ const useAuth = () => {
 
   const signUp = async () => {
     try {
+      // Se envía al servidor los datos del formulario de registro para dar de alta al usuario.
       const respuesta = await enviarDatos("user/register", {
         nombre: datosSesion.nombre,
         email: datosSesion.email,
@@ -63,7 +65,7 @@ const useAuth = () => {
     } catch (e) {
       throw error;
     } finally {
-      // Limpiamos TODO el localStorage
+      // Se limpia TODO el localStorage y estados que tienen que ver con la sesión del usuario.
       localStorage.removeItem("token_usuario");
       localStorage.removeItem("user_tetra");
       

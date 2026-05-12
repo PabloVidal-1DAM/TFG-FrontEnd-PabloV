@@ -23,7 +23,7 @@ const IconoUsuario = ({ esMovil = false }) => {
           </span>
         ) : (
           <Link to="/login" className="font-bold text-sm hover:underline tracking-wide">
-            Entrar / Registro
+            Entrar
           </Link>
         )}
       </div>

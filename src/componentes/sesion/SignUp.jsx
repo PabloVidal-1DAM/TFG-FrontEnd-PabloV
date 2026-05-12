@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import FormularioRegistro from "../formularios/FormularioRegistro";
 
+// Componente que representa la página de registro en el router dom, que contiene el componente del formulario de registro.
 const SignUp = () => {
   return (
     <div className="max-w-md mx-auto mt-20 mb-20 p-8 bg-white rounded-2xl shadow-sm border border-gray-100">

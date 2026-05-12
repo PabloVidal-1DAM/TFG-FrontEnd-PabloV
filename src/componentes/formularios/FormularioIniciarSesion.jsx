@@ -2,8 +2,8 @@ import React from "react";
 import Boton from "../ui/boton";
 import useContextSesion from "../../hooks/useContextSesion";
 
+// Formulario para que el usuario se logee en mi aplicación web.
 const FormularioIniciarSesion = () => {
-  // 1. Extraemos todo el arsenal que preparamos en el Proveedor
   const {
     datosSesion,
     actualizarDatosFormulario,

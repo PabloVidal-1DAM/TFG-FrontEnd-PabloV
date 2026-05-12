@@ -21,14 +21,16 @@ const ProveedorSesion = ({ children }) => {
   // Estado que guarda una lista de mensajes, lo usará el componente para mostrar los mensajes.
   const [mensajes, setMensajes] = useState([]);
 
+  // Estado que guardará los errores cometidos en los formularios de inicio/registro de sesión.
   const [erroresFormulario, setErroresFormulario] = useState({});
 
   const ponerMensaje = (tipo, texto) => {
+
     // He usado como identificador de cada mensaje para react al recorrerlos la fecha + número random.
     const id = Date.now() + Math.random();
     const nuevoMensaje = { id, tipo, texto };
 
-    // Se usa el callback para setear el estado y no saltarse algunos seteos que ocurran muy rápido.
+    // Se usa el callback para setear el estado y no saltarse algunos setters que ocurran muy rápido.
     setMensajes((mensajesActuales) => [...mensajesActuales, nuevoMensaje]);
 
     // A los tres segundos, el mensaje desaparece de la pantalla.
@@ -44,7 +46,7 @@ const ProveedorSesion = ({ children }) => {
     try {
       const respuesta = await login();
 
-      ponerMensaje("exito", `Bienvenido, ${respuesta.user.name}`);
+      ponerMensaje("exito", `Bienvenido, ${respuesta.user.nombre}`);
       navegar("/catalogo");
     } catch (error) {
       ponerMensaje("error", `Error al iniciar sesion: ${error.message}`);
@@ -72,8 +74,7 @@ const ProveedorSesion = ({ children }) => {
     }
   };
 
-  // 2. Función genérica para actualizar el estado global conforme el usuario escribe.
-  // Esto nos ahorra hacer un onChange diferente para cada input.
+  // Función genérica para actualizar el estado de cualquier campo del formulario conforme el usuario escribe.
   const actualizarDatosFormulario = (e) => {
     const { name, value } = e.target;
     setDatosSesion({
@@ -91,16 +92,14 @@ const ProveedorSesion = ({ children }) => {
   const manejarLogin = (e) => {
     e.preventDefault();
 
-    // Chivato 2: Comprobamos qué datos exactos tiene el estado ahora mismo
-    console.log("📦 2. Datos en el estado:", datosSesion);
-
     // Se validan que los datos puestos son los correctos.
     const errorEmail = validarEmail(datosSesion?.email);
     const errorPassword = validarPassword(datosSesion?.password);
 
+    // En caso de haber un error, se almacenan en un objeto JSON en el estado de errores de formulario.
     setErroresFormulario({email: errorEmail, password: errorPassword})
 
-    // 2. Comprobamos si alguna nos ha devuelto un texto de error
+    // Si algún campo no ha validado, se le hace saber al usuario.
     if (errorEmail) {
       ponerMensaje("error", errorEmail);
       return; // Cortamos la ejecución
@@ -111,9 +110,7 @@ const ProveedorSesion = ({ children }) => {
       return;
     }
 
-    // 3. Si llegamos aquí, ambos devolvieron null. ¡Luz verde!
-    iniciarSesion();
-
+    // Si no hay errores y todo está valido, se inicia sesión.
     iniciarSesion();
   };
 
@@ -138,7 +135,6 @@ const ProveedorSesion = ({ children }) => {
     if (errorPassword) { ponerMensaje("error", errorPassword); return; }
     if (errorConfirmacion) { ponerMensaje("error", errorConfirmacion); return; }
 
-    // Si todo está OK, llamamos al backend
     registrarse();
   };
 
@@ -162,6 +158,7 @@ const ProveedorSesion = ({ children }) => {
     cerrarSesion,
     navegar,
 
+    // Formularios de Inicio/Registro de sesión.
     actualizarDatosFormulario,
     manejarLogin,
     manejarRegistro

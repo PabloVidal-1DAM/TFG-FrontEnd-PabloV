@@ -2,6 +2,7 @@ import React from "react";
 import Boton from "../ui/boton";
 import useContextSesion from "../../hooks/useContextSesion";
 
+// Formulario para dar de alta a un usuario en mi aplicación web.
 const FormularioRegistro = () => {
   const {
     datosSesion,

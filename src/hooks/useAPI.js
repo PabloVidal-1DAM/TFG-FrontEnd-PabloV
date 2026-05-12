@@ -1,11 +1,13 @@
 import React from "react";
 import { useState } from "react";
 
+// Hook personalizado que maneja la comunicación con laravel, usando funciones genericas para obtener, enviar y modificar datos.
 const useAPI = () => {
   const urlAPI = "http://localhost:8095/api";
   const [cargando, setCargando] = useState(false);
 
-  // Función auxiliar para montar las cabeceras con el token del backend que le pertenece al usuario.
+  // Función auxiliar para montar las cabeceras con el token del backend que le pertenece al usuario
+  // y se enviará a Laravel para identificarlo al hacer peticiones protegidas.
   const obtenerCabeceras = () => {
     const token = localStorage.getItem("token_usuario");
     return {
@@ -23,8 +25,8 @@ const useAPI = () => {
     try {
       const ruta = id ? `${urlAPI}/${endpoint}/${id}` : `${urlAPI}/${endpoint}`;
       const respuesta = await fetch(ruta, {
-        method: 'GET',
-        headers: obtenerCabeceras()
+        method: "GET",
+        headers: obtenerCabeceras(),
       });
 
       if (!respuesta.ok)
@@ -51,14 +53,10 @@ const useAPI = () => {
         body: JSON.stringify(cuerpo),
       });
 
-      if (!respuesta.ok) {
-        const errorData = await respuesta.json();
-        // Lanzamos el mensaje que viene de Laravel, o uno genérico
+      if (!respuesta.ok)
         throw new Error(
-          errorData.message ||
-            `Error al enviar los datos a la API: ${respuesta.status}`,
+          `Error al enviar datos a la API: ${respuesta.status}`,
         );
-      }
 
       const datos = await respuesta.json();
       return datos;
