@@ -53,10 +53,13 @@ const useAPI = () => {
         body: JSON.stringify(cuerpo),
       });
 
-      if (!respuesta.ok)
-        throw new Error(
-          `Error al enviar datos a la API: ${respuesta.status}`,
-        );
+      if (!respuesta.ok) {
+        if (respuesta.status === 401) {
+          throw new Error("Credenciales incorrectas.");
+        }
+
+        throw new Error(`Error al enviar datos a la API: ${respuesta.status}`);
+      }
 
       const datos = await respuesta.json();
       return datos;

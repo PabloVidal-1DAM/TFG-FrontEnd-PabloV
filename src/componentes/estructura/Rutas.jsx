@@ -6,6 +6,7 @@ import DetalleProducto from '../productos/DetalleProducto'
 import Carrito from '../pedidos/Carrito'
 import Login from '../sesion/Login'
 import SignUp from '../sesion/SignUp'
+import Proveedores from '../proveedores/Proveedores'
 
 const Rutas = () => {
   return (
@@ -17,6 +18,7 @@ const Rutas = () => {
         <Route path='/carrito' element={<Carrito />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUp />} />
+        <Route path='/proveedores' element={<Proveedores />} />
       </Routes>
     </div>
   )

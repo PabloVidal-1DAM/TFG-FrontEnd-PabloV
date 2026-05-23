@@ -33,7 +33,6 @@ const MenuMovil = () => {
       >
         <div className="flex flex-col space-y-6 mt-8 text-lg">
           
-          {/* ¡AQUÍ ESTÁ! Le decimos que se comporte como móvil */}
           <IconoUsuario esMovil={true} />
 
           <NavLink
@@ -61,7 +60,7 @@ const MenuMovil = () => {
           </NavLink>
 
           <div className="pt-6 mt-4 border-t border-green-800 px-3">
-            {/* LÓGICA CONDICIONAL: Mostramos unos botones u otros */}
+            {/* Se muestran o dejan de mostrar algunos botones dependiendo de si hay o no sesión. */}
             {sesionIniciada ? (
               <Boton
                 evento={manejarCerrarSesion}

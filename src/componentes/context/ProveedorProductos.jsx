@@ -1,9 +1,11 @@
 import React, { createContext, useEffect, useState } from "react";
 import useAPI from "../../hooks/useAPI";
+import useContextSesion from "../../hooks/useContextSesion";
 
 const contextoProductos = createContext();
 const ProveedorProductos = ({ children }) => {
   const { obtenerDatos, cargando } = useAPI();
+  const {ponerMensaje} = useContextSesion();
 
   const [listaProductos, setListaProductos] = useState([]);
   const [productoSeleccionado, setProductoSeleccionado] = useState({});
@@ -12,16 +14,16 @@ const ProveedorProductos = ({ children }) => {
   const [totalProductos, setTotalProductos] = useState(0);
   const [primerElemento, setPrimerElemento] = useState(0);
 
-  // La función para que acepa un número de página a mostrar (por defecto la 1).
+  // Función que trae todos los productos y acepa un número de página a mostrar de la paginación (por defecto la 1).
   const cargarProductos = async (pagina = 1) => {
     try {
-      // Le pasamos el parámetro ?page= al endpoint de Laravel para que sepa que página traer.
+      // Se le pasa el parámetro ?page= al endpoint de Laravel para que sepa que página traer.
       const respuesta = await obtenerDatos(`productos?page=${pagina}`);
 
       setListaProductos(respuesta.data); // Guarda los 6 productos de la página pasada.
       setTotalProductos(respuesta.total); // Guarda el número total real (ej. 30).
     } catch (error) {
-      console.log("Ha ocurrido un error al traer los productos: " + error); // cambiar cuando se tenga el setError
+      ponerMensaje("Ha ocurrido un error al traer los productos: " + error); 
     }
   };
   // Función para traer los productos destacados de la bbdd, basado en los que más están en los pedidos de la gente.
@@ -30,7 +32,7 @@ const ProveedorProductos = ({ children }) => {
       const respuesta = await obtenerDatos("productos/destacados");
       setProductosDestacados(respuesta);
     } catch (error) {
-      console.log("Ha ocurrido un error al traer los productos destacados: " + error);
+      ponerMensaje("Ha ocurrido un error al traer los productos destacados: " + error);
     }
   };
 
@@ -39,7 +41,7 @@ const ProveedorProductos = ({ children }) => {
       const respuesta = await obtenerDatos(`productos/${id}`);
       setProductoSeleccionado(respuesta);
     }catch(error){
-      console.log("Ha ocurrido un error al traer el producto seleccionado: " + error);
+      ponerMensaje("Ha ocurrido un error al traer el producto seleccionado: " + error);
     }
   }
 

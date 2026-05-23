@@ -5,8 +5,7 @@ import useContextSesion from "../../hooks/useContextSesion";
 const IconoUsuario = ({ esMovil = false }) => {
   const { sesionIniciada, usuario } = useContextSesion();
 
-  // Si estamos en el menú móvil y NO hay sesión, no pintamos nada 
-  // (para no duplicar los botones grandes que ya tienes abajo).
+  // Si estamos en el menú móvil y NO hay sesión, no se pinta nada (decisión de diseño).
   if (esMovil && !sesionIniciada) return null;
 
   return (

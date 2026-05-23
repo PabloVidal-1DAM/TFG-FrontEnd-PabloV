@@ -32,26 +32,40 @@ const Menu = () => {
           Nosotros
         </NavLink>
 
-        <Link
-          to="/login"
-          className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition"
+                <NavLink
+          to="/proveedores"
+          className={({ isActive }) =>
+            isActive
+              ? "text-terciario font-bold transition"
+              : "text-white hover:text-terciario hover:font-bold transition"
+          }
         >
-          Iniciar Sesión
-        </Link>
-
-        <Link
-          to="/signup"
-          className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition"
-        >
-          Registrarse
-        </Link>
-        <Boton
-          evento={cerrarSesion}
-          variante="peligro" 
-          className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 hover:font-bold transition"
-        >
-        <i className="pi pi-sign-out ml-1"></i>
-        </Boton>
+          Proveedores
+        </NavLink>
+        {!sesionIniciada ? (
+          <>
+            <Link
+              to="/login"
+              className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition"
+            >
+              Iniciar Sesión
+            </Link>
+            <Link
+              to="/signup"
+              className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition"
+            >
+              Registrarse
+            </Link>
+          </>
+        ) : (
+          <Boton
+            evento={cerrarSesion}
+            variante="peligro"
+            className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 hover:font-bold transition"
+          >
+            <i className="pi pi-sign-out ml-1"></i>
+          </Boton>
+        )}
       </nav>
       {/*MENÚ LATERAL MÓVIL (He usado el sidebar de PrimeReact)*/}
       <MenuMovil />

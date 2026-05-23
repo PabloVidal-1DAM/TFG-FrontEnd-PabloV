@@ -110,7 +110,6 @@ const ProveedorSesion = ({ children }) => {
       return;
     }
 
-    // Si no hay errores y todo está valido, se inicia sesión.
     iniciarSesion();
   };
 
