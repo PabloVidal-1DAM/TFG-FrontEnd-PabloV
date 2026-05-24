@@ -11,12 +11,14 @@ import ProveedorProductos from "./componentes/context/ProveedorProductos.jsx";
 import ProveedorSesion from "./componentes/context/ProveedorSesion.jsx";
 import ProveedorPedidos from "./componentes/context/ProveedorPedidos.jsx";
 import Notificacion from "./componentes/ui/Notificacion.jsx";
+import ProveedorProveedores from "./componentes/context/ProveedorProveedores.jsx";
 
 function App() {
   return (
     <>
       <ProveedorSesion>
         <Notificacion />
+        <ProveedorProveedores>
           <ProveedorPedidos>
             <Header />
             <Contenido>
@@ -26,6 +28,7 @@ function App() {
             </Contenido>
             <Pie />
           </ProveedorPedidos>
+        </ProveedorProveedores>
       </ProveedorSesion>
     </>
   );

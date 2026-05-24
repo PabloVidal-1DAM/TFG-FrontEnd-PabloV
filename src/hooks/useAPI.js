@@ -31,7 +31,7 @@ const useAPI = () => {
 
       if (!respuesta.ok)
         throw new Error(
-          `Error al obtener datos de la API: ${respuesta.status}`,
+          respuesta.status
         );
 
       const datos = await respuesta.json();
