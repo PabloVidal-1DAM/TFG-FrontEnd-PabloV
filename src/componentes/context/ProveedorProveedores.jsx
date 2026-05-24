@@ -25,6 +25,18 @@ const ProveedorProveedores = ({ children }) => {
     }
   };
 
+    const cargarDetalle = async (id) => {
+    try {
+      const respuesta = await obtenerDatos(`proveedores/${id}`);
+      setProveedorSeleccionado(respuesta); 
+    } catch (error) {
+      ponerMensaje(
+        "error",
+        "Error al cargar el detalle del proveedor: " + error.message,
+      );
+    }
+  };
+
   useEffect(() => {
     // Solo se cargan los proveedores si realmente hay una sesión iniciada
     if (sesionIniciada) {
@@ -33,8 +45,9 @@ const ProveedorProveedores = ({ children }) => {
       // Si se cierra sesión, lista vacía por seguridad.
       setListaProveedores([]);
       setTotalProveedores(0);
+      setProveedorSeleccionado(null);
     }
-  }, [sesionIniciada]); 
+  }, [sesionIniciada]);
 
   // Función que se ejecuta cuando el usuario hace clic en los números para pasar de página.
   const alCambiarPagina = (evento) => {
@@ -55,6 +68,8 @@ const ProveedorProveedores = ({ children }) => {
     primerElemento,
     cargarProveedores, // El Paginador las usa para llamar a la siguiente página.
     alCambiarPagina,
+    cargarDetalle,
+    proveedorSeleccionado,
   };
   return (
     <contextoProveedores.Provider value={datos}>

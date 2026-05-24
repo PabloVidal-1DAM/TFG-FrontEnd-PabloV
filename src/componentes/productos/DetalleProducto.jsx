@@ -8,6 +8,7 @@ import ReviewsProducto from "./ReviewsProducto.jsx";
 import { Rating } from "primereact/rating";
 import useContextPedidos from "../../hooks/useContextPedidos.js"
 
+// Componente creado para representar a la ruta dinámica del producto que se seleccione en el componente Producto.
 const DetalleProducto = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const DetalleProducto = () => {
         onClick={() => navigate(-1)}
         className="mb-8 flex items-center text-gray-500 hover:text-primario transition-colors font-semibold"
       >
-        <i className="pi pi-arrow-left mr-2"></i> Volver al catálogo
+        <i className="pi pi-arrow-left mr-2"></i> Volver atrás
       </button>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white p-8 rounded-2xl shadow-sm mb-12">

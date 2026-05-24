@@ -1,11 +1,14 @@
 import React from "react";
 import { Card } from "primereact/card";
+import useContextSesion from "../../hooks/useContextSesion";
 
 const Proveedor = ({ proveedor }) => {
+  const { navegar } = useContextSesion();
+
   // Cabecera de la tarjeta: Franja verde corporativa con un icono
   const cabecera = (
-    <div className="bg-primario h-24 rounded-t-lg flex items-center justify-center">
-      <i className="pi pi-building text-white text-4xl"></i>
+    <div className="bg-primario h-24 rounded-t-lg flex items-center justify-center transition-colors duration-300 group-hover:bg-terciario">
+      <i className="pi pi-building text-white text-4xl transition-colors duration-300 group-hover:text-primario"></i>
     </div>
   );
 
@@ -14,7 +17,8 @@ const Proveedor = ({ proveedor }) => {
       title={proveedor.nombre}
       subTitle={`CIF: ${proveedor.cif}`}
       header={cabecera}
-      className="h-full w-full flex flex-col shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+      onClick={() => navegar(`/proveedor/${proveedor.id}`)}
+      className="group h-full w-full flex flex-col shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden cursor-pointer"
       pt={{ body: { className: "p-4 flex-grow" }, content: { className: "py-2" } }}
     >
       <div className="space-y-4 text-sm text-gray-600 mt-2">

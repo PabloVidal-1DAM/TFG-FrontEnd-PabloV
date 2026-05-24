@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import LandingPage from '../pages/LandingPage'
 import Productos from '../productos/Productos'
 import DetalleProducto from '../productos/DetalleProducto'
+import DetalleProveedor from '../proveedores/DetalleProveedor'
 import Carrito from '../pedidos/Carrito'
 import Login from '../sesion/Login'
 import SignUp from '../sesion/SignUp'
@@ -19,6 +20,7 @@ const Rutas = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/proveedores' element={<Proveedores />} />
+        <Route path='/proveedor/:id' element={<DetalleProveedor />} />
       </Routes>
     </div>
   )
