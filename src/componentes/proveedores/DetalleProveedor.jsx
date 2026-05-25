@@ -34,7 +34,7 @@ const DetalleProveedor = () => {
     );
   }
 
-  // Mapeamos los productos ofertados de la relación inyectada de Laravel
+  // Se guardan los productos que provee el Proveedor para recorrerlos y mostrarlos más adelante.
   const productosOferta = proveedorSeleccionado.productos || [];
 
   return (

@@ -115,7 +115,6 @@ const ProveedorSesion = ({ children }) => {
 
   const manejarRegistro = (e) => {
     e.preventDefault(); 
-    console.log("📝 Intentando registrar con:", datosSesion);
 
     const errorNombre = validarNombre(datosSesion?.nombre);
     const errorEmail = validarEmail(datosSesion?.email);

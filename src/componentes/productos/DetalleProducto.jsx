@@ -6,7 +6,7 @@ import Boton from "../ui/boton";
 import { ProgressSpinner } from "primereact/progressspinner";
 import ReviewsProducto from "./ReviewsProducto.jsx";
 import { Rating } from "primereact/rating";
-import useContextPedidos from "../../hooks/useContextPedidos.js"
+import useContextPedidos from "../../hooks/useContextPedidos.js";
 
 // Componente creado para representar a la ruta dinámica del producto que se seleccione en el componente Producto.
 const DetalleProducto = () => {
@@ -67,16 +67,31 @@ const DetalleProducto = () => {
 
         {/* Lado Derecho: Detalles */}
         <div className="flex flex-col justify-center">
-          <div className="flex gap-2 mb-4">
+          {/* Estructura de Categorías Jerárquicas */}
+          <div className="flex flex-col gap-1.5 mb-4">
             {producto.categorias &&
-              producto.categorias.map((cat) => (
-                <span
-                  key={cat.id}
-                  className="bg-secundario text-terciario px-3 py-1 rounded-full text-sm font-semibold"
-                >
-                  {cat.nombre}
-                </span>
-              ))}
+              producto.categorias.map((cat) => {
+                // Controlamos si Laravel te lo devuelve en camelCase o snake_case
+                const padre = cat.categoria_padre || cat.categoriaPadre;
+
+                return (
+                  <div key={cat.id} className="flex items-center gap-2 text-sm">
+                    {/* Si tiene categoría padre, la pintamos con un estilo más sobrio */}
+                    {padre && (
+                      <>
+                        <span className="text-gray-400 font-semibold uppercase tracking-wider text-xs">
+                          {padre.nombre}
+                        </span>
+                        <i className="pi pi-angle-right text-gray-300 text-xs mt-0.5"></i>
+                      </>
+                    )}
+                    {/* La subcategoría actual destacada con tus estilos corporativos */}
+                    <span className="bg-secundario text-terciario px-3 py-0.5 rounded-full text-xs font-bold shadow-sm">
+                      {cat.nombre}
+                    </span>
+                  </div>
+                );
+              })}
           </div>
 
           <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
@@ -132,7 +147,9 @@ const DetalleProducto = () => {
             <Boton
               variante="primario"
               className="py-3 px-8 text-lg w-full md:w-auto hover:cursor-pointer"
-              evento={() =>{agregarAlCarrito(producto)}}
+              evento={() => {
+                agregarAlCarrito(producto);
+              }}
             >
               <i className="pi pi-shopping-cart mr-2"></i> Añadir al carrito
             </Boton>

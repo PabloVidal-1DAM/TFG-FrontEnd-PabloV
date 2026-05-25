@@ -20,9 +20,8 @@ const Proveedores = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
-      {/* --- EL CONDICIONAL MAGNO --- */}
       {sesionIniciada ? (
-        // SI HAY SESIÓN: Mostramos el contenido de siempre
+        // Si hay sesión iniciada se muestra el contenido normal de este componente
         cargando ? (
           <div className="flex justify-center items-center py-20">
             <ProgressSpinner
@@ -78,7 +77,7 @@ const Proveedores = () => {
           </>
         )
       ) : (
-        // SI NO HAY SESIÓN: Mostramos un mensaje de acceso restringido
+        //  Si no hay sesión muestro un mensaje de acceso restringido, ya que la ruta de Proveedores está protegida por login.
         <AccesoRestringido
           motivo="Por motivos de privacidad, la lista de proveedores solo está disponible para usuarios registrados." 
         />
