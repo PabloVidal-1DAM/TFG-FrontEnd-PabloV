@@ -74,7 +74,7 @@ const ProveedorSesion = ({ children }) => {
     }
   };
 
-  // Función genérica para actualizar el estado de cualquier campo del formulario conforme el usuario escribe.
+  // Función para actualizar el estado de cualquier campo del formulario conforme el usuario escribe.
   const actualizarDatosFormulario = (e) => {
     const { name, value } = e.target;
     setDatosSesion({

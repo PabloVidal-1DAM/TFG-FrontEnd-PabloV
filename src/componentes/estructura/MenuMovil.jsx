@@ -59,6 +59,18 @@ const MenuMovil = () => {
             Nosotros
           </NavLink>
 
+          <NavLink
+            to="/proveedores"
+            onClick={() => setMenuAbierto(false)}
+            className={({ isActive }) =>
+              isActive
+                ? "text-terciario font-bold border-l-4 border-terciario pl-3"
+                : "text-white hover:text-terciario pl-3 transition"
+            }
+          >
+            Proveedores
+          </NavLink>
+
           <div className="pt-6 mt-4 border-t border-green-800 px-3">
             {/* Se muestran o dejan de mostrar algunos botones dependiendo de si hay o no sesión. */}
             {sesionIniciada ? (
