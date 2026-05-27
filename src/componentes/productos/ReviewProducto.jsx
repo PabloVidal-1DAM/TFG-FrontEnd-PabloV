@@ -2,18 +2,13 @@ import React from "react";
 import useContextSesion from "../../hooks/useContextSesion";
 import { Rating } from "primereact/rating";
 
-/**
- * COMPONENTE HIJO: ReviewProducto
- * * PROPÓSITO: Representa visualmente una única reseña dentro de la lista.
- * DECISIÓN: Se extrae del mapeo principal para seguir el Principio de Responsabilidad Única (SRP).
- * Además, de forma autónoma consulta la sesión actual para saber si debe mostrar o no 
- * las acciones de edición/borrado al usuario logueado.
- */
+ //Representa visualmente una única reseña dentro de la lista.
+ //Además, se consulta la sesión actual para saber si debe mostrar o no las acciones de edición/borrado al usuario logueado.
 const ReviewProducto = ({ review, abrirParaEditar, confirmarBorrado }) => {
 
   const { usuario, sesionIniciada } = useContextSesion();
   
-  // Lógica de seguridad/UX: Comprobamos si la review iterada pertenece al usuario actual
+  // Se Comprueba si la review iterada pertenece al usuario actual.
   const esMiReview = sesionIniciada && usuario?.id === review.user_id;
 
   return (
@@ -48,7 +43,7 @@ const ReviewProducto = ({ review, abrirParaEditar, confirmarBorrado }) => {
         "{review.comentario}"
       </p>
 
-      {/* Solo se renderizan los botones si el usuario es el dueño de esta reseña */}
+      {/* Solo se renderizan los botones si el usuario es el dueño de esta reseña. */}
       {esMiReview && (
         <div className="flex gap-4 border-t border-gray-200/60 pt-3 mt-2">
           <button

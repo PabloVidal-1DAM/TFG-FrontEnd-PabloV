@@ -4,26 +4,17 @@ import useContextSesion from "../../hooks/useContextSesion";
 import useContextProductos from "../../hooks/useContextProductos";
 import Boton from "../ui/boton";
 
-/**
- * COMPONENTE HIJO: FormularioReviews
- * * DECISIÓN ARQUITECTÓNICA: Aislamiento del estado local (Local State Isolation).
- * El estado de lo que el usuario teclea (inputs) se guarda exclusivamente aquí. 
- * Si estos estados estuvieran en el padre, cada letra pulsada en el teclado haría que 
- * TODA la lista de reseñas y la página del producto se volviera a renderizar, 
- * afectando gravemente al rendimiento de la aplicación.
- */
+// Formulario para rellenar una review dejada a un producto.
 const FormularioReviews = ({ productoId, reviewAEditar, cerrarFormulario }) => {
   const { ponerMensaje } = useContextSesion();
   const { crearReview, editarReview } = useContextProductos();
 
-  // Estado estrictamente local: Solo importa en el instante antes del submit
   const [formulario, setFormulario] = useState({
     valoracion: 0,
     comentario: "",
   });
 
-  // Efecto secundario: Escucha cambios en la prop 'reviewAEditar'.
-  // Si el padre manda un objeto, rellena los campos (modo Edición).
+  // Si el padre manda una review ya hecha por objeto, rellena los campos (modo Edición).
   // Si manda null, vacía los campos (modo Creación).
   useEffect(() => {
     if (reviewAEditar) {
@@ -44,14 +35,13 @@ const FormularioReviews = ({ productoId, reviewAEditar, cerrarFormulario }) => {
       return;
     }
 
-    // Encaminamiento dinámico de la petición a la API según el modo (Crear vs Editar)
+    // 2 llamadas (PUT, POST) distintas según si se está pasando una review ya hecha por objeto o no.
     if (reviewAEditar) {
       await editarReview(reviewAEditar.id, productoId, formulario);
     } else {
       await crearReview(productoId, formulario);
     }
 
-    // Una vez resuelta la promesa exitosamente, ordenamos al padre cerrar la ventana
     cerrarFormulario();
   };
 

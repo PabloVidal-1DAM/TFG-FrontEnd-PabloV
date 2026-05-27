@@ -24,8 +24,7 @@ const ReviewsProducto = ({ producto }) => {
     ? producto.reviews.find((r) => r.user_id === usuario.id)
     : null;
 
-  // --- MANEJADORES DE ESTADO ---
-
+  // Funciones que manejan los estados del formulario
   const abrirParaCrear = () => {
     setReviewAEditar(null); // Nos aseguramos de que el formulario se abra en modo "Creación"
     setMostrarFormulario(true);
@@ -41,6 +40,7 @@ const ReviewsProducto = ({ producto }) => {
     setReviewAEditar(null);
   };
 
+  // Función que se importa junto al componente de la ventana modal, done se le da formato y estilo a como se va a usar el componente de prime react.
   const confirmarBorrado = (reviewId) => {
     confirmDialog({
       message: "¿Estás seguro de que quieres borrar tu reseña? Esta acción no se puede deshacer.",
