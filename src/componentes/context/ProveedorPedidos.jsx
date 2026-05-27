@@ -139,7 +139,7 @@ const ProveedorPedidos = ({ children }) => {
       setCarritoCompra([]); 
       ponerMensaje("success", "¡Pedido realizado con éxito!");
       
-      navegar("/"); 
+      navegar("/pedidos"); 
     } catch (error) {
       ponerMensaje("error", "Hubo un error al tramitar el pedido: " + error.message);
     }
@@ -152,7 +152,8 @@ const ProveedorPedidos = ({ children }) => {
     disminuirCantidad,
     vaciarCarrito,
     totalArticulos,
-    precioTotal
+    precioTotal,
+    tramitarPedido
   };
   return (
     <contextoPedido.Provider value={datos}>{children}</contextoPedido.Provider>

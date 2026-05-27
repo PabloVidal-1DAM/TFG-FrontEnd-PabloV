@@ -8,6 +8,7 @@ import Login from '../sesion/Login'
 import SignUp from '../sesion/SignUp'
 import Proveedores from '../proveedores/Proveedores'
 import Catalogo from '../pages/Catalogo'
+import Pedidos from '../pedidos/Pedidos'
 
 const Rutas = () => {
   return (
@@ -17,6 +18,7 @@ const Rutas = () => {
         <Route path='/catalogo' element={<Catalogo />} />
         <Route path='/producto/:id' element={<DetalleProducto />} />
         <Route path='/carrito' element={<Carrito />} />
+        <Route path='/pedidos' element={<Pedidos />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/proveedores' element={<Proveedores />} />
