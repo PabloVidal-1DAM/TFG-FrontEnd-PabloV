@@ -49,7 +49,7 @@ const Producto = ({ producto }) => {
         </Boton>
 
         {/* Botón de Añadir producto al carrito */}
-        <Boton variante="primario" className="py-2 px-4 text-sm hover:cursor-pointer" evento={() =>{agregarAlCarrito(producto)}}>
+        <Boton variante="primario" className="py-2 px-4 text-sm hover:cursor-pointer hover:bg-terciario hover:text-primario hover:font-bold transition" evento={() =>{agregarAlCarrito(producto)}}>
           <i className="pi pi-shopping-cart mr-2"></i> Añadir
         </Boton>
       </div>

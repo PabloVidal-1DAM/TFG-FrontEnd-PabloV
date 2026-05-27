@@ -70,9 +70,51 @@ const useAPI = () => {
     }
   };
 
+  const modificarDatos = async(endpoint, cuerpo) =>{
+    try{
+      setCargando(true);
+      const respuesta = await fetch(`${urlAPI}/${endpoint}`, {
+        method: "PUT",
+        headers: obtenerCabeceras(),
+        body: JSON.stringify(cuerpo)
+      });
+
+      if(!respuesta.ok){
+        throw new Error(`Error al modificar datos de la API: ${respuesta.status}`);
+      }
+
+      const datos = await respuesta.json();
+      return datos;
+    }catch(e){
+      throw e;
+    }finally{
+      setCargando(false);
+    }
+  }
+
+  const borrarDatos = async(endpoint) =>{
+    try{
+      setCargando(true);
+
+      const respuesta = await fetch(`${urlAPI}/${endpoint}`, {
+        method: "DELETE",
+        headers: obtenerCabeceras(),
+      });
+
+      const datos = await respuesta.json();
+      return datos;
+    }catch(e){
+      throw error;
+    }finally{
+      setCargando(false);
+    }
+  }
+
   const datos = {
     obtenerDatos,
     enviarDatos,
+    modificarDatos,
+    borrarDatos,
     cargando,
   };
   return datos;

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import useContextProductos from "../../hooks/useContextProductos.js";
 import { formatearMoneda } from "../../functions/formatos.js";
 import Boton from "../ui/boton";
@@ -94,11 +94,16 @@ const DetalleProducto = () => {
           </div>
 
           {producto.proveedor && (
-            <p className="text-gray-500 font-medium mb-4">
+            <p className="text-gray-500 font-medium mb-4 flex items-center gap-1">
               Vendido por:{" "}
-              <span className="text-primario font-bold">
+              <Link
+                to={`/proveedor/${producto.proveedor.id}`}
+                className="text-primario font-bold hover:text-terciario hover:underline transition-colors flex items-center gap-1 ml-1"
+                title={`Ver perfil de ${producto.proveedor.nombre}`}
+              >
                 {producto.proveedor.nombre}
-              </span>
+                <i className="pi pi-external-link text-[0.7rem] opacity-70"></i>
+              </Link>
             </p>
           )}
 
@@ -128,7 +133,7 @@ const DetalleProducto = () => {
           <div className="flex gap-4">
             <Boton
               variante="primario"
-              className="py-3 px-8 text-lg w-full md:w-auto hover:cursor-pointer"
+              className="py-3 px-8 text-lg w-full md:w-auto hover:cursor-pointer hover:bg-terciario hover:text-primario hover:font-bold transition"
               evento={() => {
                 agregarAlCarrito(producto);
               }}

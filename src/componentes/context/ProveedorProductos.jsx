@@ -5,7 +5,7 @@ import useContextSesion from "../../hooks/useContextSesion";
 const contextoProductos = createContext();
 
 const ProveedorProductos = ({ children }) => {
-  const { obtenerDatos, cargando } = useAPI();
+  const { obtenerDatos, enviarDatos, modificarDatos, borrarDatos, cargando } = useAPI();
   const { ponerMensaje } = useContextSesion();
 
   const [listaProductos, setListaProductos] = useState([]);
@@ -143,16 +143,15 @@ const ProveedorProductos = ({ children }) => {
 
   const crearReview = async (productoId, datosReview) => {
     try {
-      // datosReview será un objeto: { valoracion: 5, comentario: "..." }
-      // Asegúrate de enviar el producto_id si tu endpoint lo requiere.
-      await enviarDatos("reviews", "POST", {
+      // Usamos enviarDatos (POST) y le pasamos el endpoint y el cuerpo
+      await enviarDatos("reviews", {
         ...datosReview,
         producto_id: productoId,
       });
 
       ponerMensaje("success", "¡Gracias por tu opinión!");
 
-      // LA MAGIA: Refrescamos el producto. Esto traerá la nueva review y la nueva media.
+      // Al enviarse la review, se refresca el producto...
       await cargarProductoSeleccionado(productoId);
     } catch (error) {
       ponerMensaje("error", "Error al publicar la reseña: " + error.message);
@@ -161,11 +160,12 @@ const ProveedorProductos = ({ children }) => {
 
   const editarReview = async (reviewId, productoId, datosReview) => {
     try {
-      await enviarDatos(`reviews/${reviewId}`, "PUT", datosReview);
+      // Usamos modificarDatos (PUT)
+      await modificarDatos(`reviews/${reviewId}`, datosReview);
 
       ponerMensaje("success", "Reseña actualizada correctamente.");
 
-      // LA MAGIA: Volvemos a traer el producto actualizado
+      // Se vuelve a traer el producto actualizado
       await cargarProductoSeleccionado(productoId);
     } catch (error) {
       ponerMensaje("error", "Error al actualizar la reseña: " + error.message);
@@ -174,11 +174,12 @@ const ProveedorProductos = ({ children }) => {
 
   const eliminarReview = async (reviewId, productoId) => {
     try {
-      await enviarDatos(`reviews/${reviewId}`, "DELETE");
+      // Usamos borrarDatos (DELETE)
+      await borrarDatos(`reviews/${reviewId}`);
 
       ponerMensaje("success", "Reseña eliminada.");
 
-      // LA MAGIA: Volvemos a traer el producto para que la review desaparezca y baje la media
+      // Se vuelve a traer el producto...
       await cargarProductoSeleccionado(productoId);
     } catch (error) {
       ponerMensaje("error", "Error al eliminar la reseña: " + error.message);
@@ -200,6 +201,10 @@ const ProveedorProductos = ({ children }) => {
     aplicarFiltros,
     limpiarFiltros,
     listaCategorias,
+
+    crearReview,
+    editarReview,
+    eliminarReview
   };
 
   return (
