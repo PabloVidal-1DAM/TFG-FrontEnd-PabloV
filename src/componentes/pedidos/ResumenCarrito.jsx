@@ -24,7 +24,7 @@ const ResumenCarrito = () => {
 
         <Boton
           variante="primario"
-          className="w-full py-4 text-lg mb-4 font-bold shadow-lg shadow-primario/30 hover:cursor-pointer"
+          className="w-full py-4 text-lg mb-4 font-bold shadow-lg shadow-primario/30 hover:cursor-pointer  hover:bg-terciario hover:text-primario hover:font-bold transition"
         >
           Completar Pedido <i className="pi pi-arrow-right ml-2"></i>
         </Boton>

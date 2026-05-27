@@ -1,12 +1,14 @@
 import React, { createContext, useEffect, useState } from "react";
 import useContextSesion from "../../hooks/useContextSesion";
+import useAPI from "../../hooks/useAPI";
 
 /* Proveedor que se encargará de proveer a los componentes que lo necesiten todo lo que tenga que ver con los pedidos,
 he visto que también es necesario incluir al carrito de la compra, ya que tiene que ver mucho con la lógica de los pedidos. */
 
 const contextoPedido = createContext();
 const ProveedorPedidos = ({ children }) => {
-  const {ponerMensaje} = useContextSesion();
+  const {ponerMensaje, sesionIniciada, navegar} = useContextSesion();
+  const {enviarDatos} = useAPI();
 
   /* Si el usuario previamente ha interactuado con el carrito, se cargan desde el localStorage,
        En caso de estar vacío, array vacío. */
@@ -22,6 +24,14 @@ const ProveedorPedidos = ({ children }) => {
       JSON.stringify(carritoCompra),
     );
   }, [carritoCompra]);
+
+  // Si el usuario cierra sesión, vaciamos el carrito y el localStorage automáticamente para prevenir que otro usuario en el mismo pc sea un mirón.
+  useEffect(() => {
+    if (!sesionIniciada) {
+      setCarritoCompra([]);
+      localStorage.removeItem("carritoTetraBIOS-Local");
+    }
+  }, [sesionIniciada]);
 
   // Añadir productos al carrito local
   const agregarAlCarrito = (producto, cantidad = 1) => {
@@ -97,6 +107,43 @@ const ProveedorPedidos = ({ children }) => {
   const precioTotal = carritoCompra.reduce((acumulador, item) => {
     return acumulador + (parseFloat(item.precio) * item.cantidad);
   }, 0);
+
+  
+  // --- COMUNICACIÓN CON LARAVEL ---
+  const tramitarPedido = async () => {
+    
+    // Antes de hacer nada, se verifica que el usuario esté logeado para hacer el pedido, por seguridad.
+    if (!sesionIniciada) {
+      ponerMensaje("error", "Debes iniciar sesión para tramitar tu pedido.");
+      navegar("/login");
+      return;
+    }
+
+    if (carritoCompra.length === 0) {
+      ponerMensaje("error", "El carrito está vacío.");
+      return;
+    }
+
+    // Se prepara el array con los datos para que coincida con lo que espera el StorePedidoRequest de Laravel.
+    const cuerpoPeticion = {
+      items: carritoCompra.map((item) => ({
+        producto_id: item.id,
+        cantidad: item.cantidad
+      }))
+    };
+
+    try {
+      await enviarDatos("pedidos", cuerpoPeticion);
+      
+      // Si todo va bien, limpiamos el  carrito local y se avisa al usuario
+      setCarritoCompra([]); 
+      ponerMensaje("success", "¡Pedido realizado con éxito!");
+      
+      navegar("/"); 
+    } catch (error) {
+      ponerMensaje("error", "Hubo un error al tramitar el pedido: " + error.message);
+    }
+  };
 
   const datos = {
     carritoCompra,
