@@ -9,7 +9,7 @@ import ResumenCarrito from "./ResumenCarrito";
 const Carrito = () => {
   const { carritoCompra } = useContextPedidos();
 
-  const { navegar } = useContextSesion();
+  const { navegar, sesionIniciada } = useContextSesion();
 
   return (
     <>
@@ -24,13 +24,26 @@ const Carrito = () => {
             ¡Anímate a explorar nuestro catálogo y descubre productos
             increíbles!
           </p>
-          <Boton
-            variante="primario"
-            evento={() => navegar("/catalogo")}
-            className="px-8 py-3 hover:cursor-pointer hover:bg-terciario hover:text-primario hover:font-bold transition"
-          >
-            Volver al catálogo
-          </Boton>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Boton
+              variante="primario"
+              evento={() => navegar("/catalogo")}
+              className="px-8 py-3 hover:cursor-pointer hover:bg-terciario hover:text-primario hover:font-bold transition"
+            >
+              Volver al catálogo
+            </Boton>
+
+            {/* Solo se muestra el botón para ver el historial de pedidos si el usuario está logueado */}
+            {sesionIniciada && (
+              <Boton
+                variante="contorno"
+                evento={() => navegar("/pedidos")} // Asegúrate de que el string coincide con tu ruta real de pedidos
+                className="px-8 py-3 hover:cursor-pointer transition"
+              >
+                <i className="pi pi-box mr-2"></i> Ver mis pedidos
+              </Boton>
+            )}
+          </div>
         </div>
       ) : (
         // 2. Si existen items en el carrito.

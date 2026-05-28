@@ -1,6 +1,7 @@
 import React from "react";
 import { formatearMoneda } from "../../functions/formatos";
 import { Link } from "react-router-dom";
+import ItemPedido from "../pedidos/ItemPedido";
 
 // Componente que representa a un pedido dentro de la lista de pedidos, el cual se recorre y se muestra en cambio este componente.
 const Pedido = ({ pedido }) => {

@@ -2,9 +2,13 @@ import React from "react";
 import { formatearMoneda } from "../../functions/formatos";
 import Boton from "../ui/boton";
 import useContextPedidos from "../../hooks/useContextPedidos";
+import useContextSesion from "../../hooks/useContextSesion";
 
+// Se encarga de mostrar los totales de la compra y disparar las acciones de
+// tramitación o vaciado, consumiendo directamente la lógica del ProveedorPedidos.
 const ResumenCarrito = () => {
-  const { vaciarCarrito, precioTotal } = useContextPedidos();
+  const { vaciarCarrito, precioTotal, tramitarPedido } = useContextPedidos();
+  const { sesionIniciada, navegar } = useContextSesion();
 
   return (
     <>
@@ -24,6 +28,7 @@ const ResumenCarrito = () => {
 
         <Boton
           variante="primario"
+          evento={tramitarPedido}
           className="w-full py-4 text-lg mb-4 font-bold shadow-lg shadow-primario/30 hover:cursor-pointer  hover:bg-terciario hover:text-primario hover:font-bold transition"
         >
           Completar Pedido <i className="pi pi-arrow-right ml-2"></i>
@@ -36,6 +41,18 @@ const ResumenCarrito = () => {
         >
           <i className="pi pi-trash"></i> Vaciar todo el carrito
         </button>
+
+        {/* Enlace sutil para ver el historial de pedidos (solo si hay sesión iniciada). */}
+        {sesionIniciada && (
+          <div className="mt-6 pt-6 border-t border-gray-100 text-center">
+            <button
+              onClick={() => navegar("/pedidos")} // Asegúrate de que coincida con la ruta de tu Rutas.jsx
+              className="text-sm font-semibold text-gray-400 hover:text-primario transition-colors flex items-center justify-center gap-2 w-full"
+            >
+              <i className="pi pi-box"></i> Ver mi historial de compras
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
