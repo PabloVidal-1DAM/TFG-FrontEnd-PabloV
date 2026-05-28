@@ -7,8 +7,8 @@ he visto que también es necesario incluir al carrito de la compra, ya que tiene
 
 const contextoPedido = createContext();
 const ProveedorPedidos = ({ children }) => {
-  const {ponerMensaje, sesionIniciada, navegar} = useContextSesion();
-  const {enviarDatos} = useAPI();
+  const { ponerMensaje, sesionIniciada, navegar } = useContextSesion();
+  const { enviarDatos, obtenerDatos, cargando } = useAPI();
 
   /* Si el usuario previamente ha interactuado con el carrito, se cargan desde el localStorage,
        En caso de estar vacío, array vacío. */
@@ -16,6 +16,9 @@ const ProveedorPedidos = ({ children }) => {
   const [carritoCompra, setCarritoCompra] = useState(
     carritoLocal ? JSON.parse(carritoLocal) : [],
   );
+
+  // Estado que guardará la lista de pedidos que pertenece al usuario de la sesión.
+  const [historialPedidos, setHistorialPedidos] = useState([]);
 
   // Cada vez que el estado del carrito cambie, se guarda en local.
   useEffect(() => {
@@ -25,10 +28,12 @@ const ProveedorPedidos = ({ children }) => {
     );
   }, [carritoCompra]);
 
-  // Si el usuario cierra sesión, vaciamos el carrito y el localStorage automáticamente para prevenir que otro usuario en el mismo pc sea un mirón.
+  // Si el usuario cierra sesión, vaciamos el carrito, el localStorage y el historial de pedidos automáticamente
+  // para prevenir que otro usuario en el mismo pc al cambiar de cuenta sea un mirón.
   useEffect(() => {
     if (!sesionIniciada) {
       setCarritoCompra([]);
+      setHistorialPedidos([]);
       localStorage.removeItem("carritoTetraBIOS-Local");
     }
   }, [sesionIniciada]);
@@ -60,14 +65,14 @@ const ProveedorPedidos = ({ children }) => {
         return [...carritoActual, { ...producto, cantidad }];
       }
     });
-    ponerMensaje("exito", "Añadido al Carrito Correctamente")
+    ponerMensaje("exito", "Añadido al Carrito Correctamente");
   };
 
   // Eliminar un producto entero del carrito local.
   const eliminarDelCarrito = (idProducto) => {
     // Se excluye del carrito el id del producto que el usuario seleccione.
     setCarritoCompra((carritoActual) => {
-      return carritoActual.filter((producto) =>producto.id !== idProducto);
+      return carritoActual.filter((producto) => producto.id !== idProducto);
     });
 
     ponerMensaje("info", "Producto eliminado del carrito");
@@ -95,7 +100,7 @@ const ProveedorPedidos = ({ children }) => {
 
   // Vaciar el contenido de todo el carrito
   const vaciarCarrito = () => {
-    setCarritoCompra([]); 
+    setCarritoCompra([]);
     ponerMensaje("info", "Carrito Vaciado Correctamente");
   };
 
@@ -105,13 +110,25 @@ const ProveedorPedidos = ({ children }) => {
 
   // Calcula el precio total sumando (precio * cantidad) de cada producto
   const precioTotal = carritoCompra.reduce((acumulador, item) => {
-    return acumulador + (parseFloat(item.precio) * item.cantidad);
+    return acumulador + parseFloat(item.precio) * item.cantidad;
   }, 0);
 
-  
-  // --- COMUNICACIÓN CON LARAVEL ---
+  // --- Comunicación con Laravel al mandar los datos del localStorage al servidor para guardar el pedido ---
+
+  // Obtiene los pedidos del usuario logueado
+  const cargarPedidosUsuario = async () => {
+    try {
+      const data = await obtenerDatos("pedidos");
+      setHistorialPedidos(data);
+    } catch (error) {
+      ponerMensaje(
+        "error",
+        "Error al cargar tu historial de pedidos: " + error.message,
+      );
+    }
+  };
+
   const tramitarPedido = async () => {
-    
     // Antes de hacer nada, se verifica que el usuario esté logeado para hacer el pedido, por seguridad.
     if (!sesionIniciada) {
       ponerMensaje("error", "Debes iniciar sesión para tramitar tu pedido.");
@@ -128,20 +145,26 @@ const ProveedorPedidos = ({ children }) => {
     const cuerpoPeticion = {
       items: carritoCompra.map((item) => ({
         producto_id: item.id,
-        cantidad: item.cantidad
-      }))
+        cantidad: item.cantidad,
+      })),
     };
 
     try {
       await enviarDatos("pedidos", cuerpoPeticion);
-      
+
       // Si todo va bien, limpiamos el  carrito local y se avisa al usuario
-      setCarritoCompra([]); 
+      setCarritoCompra([]);
       ponerMensaje("success", "¡Pedido realizado con éxito!");
-      
-      navegar("/pedidos"); 
+
+      // Tras comprar, se refresca el historial en segundo plano
+      await cargarPedidosUsuario();
+
+      navegar("/pedidos");
     } catch (error) {
-      ponerMensaje("error", "Hubo un error al tramitar el pedido: " + error.message);
+      ponerMensaje(
+        "error",
+        "Hubo un error al tramitar el pedido: " + error.message,
+      );
     }
   };
 
@@ -153,7 +176,11 @@ const ProveedorPedidos = ({ children }) => {
     vaciarCarrito,
     totalArticulos,
     precioTotal,
-    tramitarPedido
+
+    tramitarPedido,
+    historialPedidos,
+    cargarPedidosUsuario,
+    cargando
   };
   return (
     <contextoPedido.Provider value={datos}>{children}</contextoPedido.Provider>

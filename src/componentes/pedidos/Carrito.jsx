@@ -27,7 +27,7 @@ const Carrito = () => {
           <Boton
             variante="primario"
             evento={() => navegar("/catalogo")}
-            className="px-8 py-3 hover:cursor-pointer"
+            className="px-8 py-3 hover:cursor-pointer hover:bg-terciario hover:text-primario hover:font-bold transition"
           >
             Volver al catálogo
           </Boton>
