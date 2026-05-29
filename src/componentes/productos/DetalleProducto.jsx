@@ -72,7 +72,7 @@ const DetalleProducto = () => {
           <div className="flex flex-col gap-1.5 mb-4">
             {producto.categorias &&
               producto.categorias.map((categoria) => {
-                return <Categoria key={categoria.id} categoria={categoria} />
+                return <Categoria key={categoria.id} categoria={categoria} />;
               })}
           </div>
 
@@ -94,15 +94,15 @@ const DetalleProducto = () => {
           </div>
 
           {producto.proveedor && (
-            <p className="text-gray-500 font-medium mb-4 flex items-center gap-1">
-              Vendido por:{" "}
+            <p className="text-gray-500 font-medium mb-4 leading-relaxed">
+              Vendido por:
               <Link
                 to={`/proveedor/${producto.proveedor.id}`}
-                className="text-primario font-bold hover:text-terciario hover:underline transition-colors flex items-center gap-1 ml-1"
+                className="text-primario font-bold hover:text-terciario hover:underline transition-colors ml-1"
                 title={`Ver perfil de ${producto.proveedor.nombre}`}
               >
                 {producto.proveedor.nombre}
-                <i className="pi pi-external-link text-[0.7rem] opacity-70"></i>
+                <i className="pi pi-external-link text-[0.7rem] opacity-70 inline-block ml-1 align-baseline"></i>
               </Link>
             </p>
           )}
@@ -115,9 +115,9 @@ const DetalleProducto = () => {
             {producto.descripcion}
           </p>
 
-          <div className="bg-gray-100 p-4 rounded-lg mb-8 inline-block w-max">
+          <div className="bg-gray-100 p-4 rounded-lg mb-8 w-full sm:w-fit inline-flex flex-wrap items-center gap-1">
             <span className="text-gray-700 font-medium">
-              📦 Disponibilidad:{" "}
+              📦 Disponibilidad:
             </span>
             <span
               className={

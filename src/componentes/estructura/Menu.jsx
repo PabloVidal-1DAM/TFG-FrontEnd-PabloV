@@ -9,7 +9,7 @@ const Menu = () => {
   return (
     <>
       {/* MENÚ DE ESCRITORIO (Oculto en móvil, visible en md)*/}
-      <nav className="hidden min-[896px]:flex justify-end items-center space-x-8">
+      <nav className="hidden min-[1004px]:flex justify-end items-center space-x-8">
         <NavLink
           to="/catalogo"
           className={({ isActive }) =>
@@ -46,13 +46,13 @@ const Menu = () => {
           <>
             <Link
               to="/login"
-              className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition"
+              className="bg-green-700 text-white px-5 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition whitespace-nowrap"
             >
               Iniciar Sesión
             </Link>
             <Link
               to="/signup"
-              className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition"
+              className="bg-green-700 text-white px-5 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition whitespace-nowrap"
             >
               Registrarse
             </Link>
