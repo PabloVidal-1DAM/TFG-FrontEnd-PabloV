@@ -9,12 +9,14 @@ import SignUp from '../sesion/SignUp'
 import Proveedores from '../proveedores/Proveedores'
 import Catalogo from '../pages/Catalogo'
 import Pedidos from '../pedidos/Pedidos'
+import Nosotros from '../pages/Nosotros'
 
 const Rutas = () => {
   return (
     <div>
       <Routes>
         <Route path='/' element={<LandingPage />} />
+        <Route path='/nosotros' element={<Nosotros />} />
         <Route path='/catalogo' element={<Catalogo />} />
         <Route path='/producto/:id' element={<DetalleProducto />} />
         <Route path='/carrito' element={<Carrito />} />

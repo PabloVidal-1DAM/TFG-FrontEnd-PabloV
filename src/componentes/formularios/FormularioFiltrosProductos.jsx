@@ -18,7 +18,7 @@ const FormularioFiltrosProductos = () => {
     >
       {/* Buscador de texto */}
       <div className="flex-1 w-full">
-        <label className="block text-sm font-bold text-gray-700 mb-1">
+        <label htmlFor="busqueda" className="block text-sm font-bold text-gray-700 mb-1">
           Buscar por nombre
         </label>
         <div className="relative">
@@ -36,7 +36,7 @@ const FormularioFiltrosProductos = () => {
 
       {/* Ordenar Por */}
       <div className="w-full lg:w-48">
-        <label className="block text-sm font-bold text-gray-700 mb-1">
+        <label htmlFor="orden" className="block text-sm font-bold text-gray-700 mb-1">
           Ordenar por
         </label>
         <select
@@ -55,7 +55,7 @@ const FormularioFiltrosProductos = () => {
 
       {/* Categorías Agrupadas por su Categoría Padre */}
       <div className="w-full lg:w-48">
-        <label className="block text-sm font-bold text-gray-700 mb-1">
+        <label htmlFor="categoria" className="block text-sm font-bold text-gray-700 mb-1">
           Categoría
         </label>
         <select

@@ -1,12 +1,14 @@
 import React from "react";
 import { Carousel } from "primereact/carousel";
-import datosCarousel from "../../assets/contenidoCarrousel.json";
+import datosCarousel from "../../utils/contenidoCarrousel.js";
 import Boton from "../ui/boton";
 import Producto from "../productos/Producto.jsx";
 import useContextProductos from "../../hooks/useContextProductos.js";
+import useContextSesion from "../../hooks/useContextSesion.js";
 const LandingPage = () => {
 
   const {productosDestacados} = useContextProductos();
+  const {navegar} = useContextSesion();
   
   // Función que dicta como debe de pintar el componente de primeReact los datos del json
   const plantillaCarrousel = (diapositiva) => {
@@ -25,7 +27,7 @@ const LandingPage = () => {
           <p className="text-lg md:text-xl text-gray-200 mb-8 drop-shadow-sm">
             {diapositiva.subtitulo}
           </p>
-          <Boton variante="primario" className="py-3 px-8 rounded-full transform mb-4 hover:scale-105 text-lg">
+          <Boton variante="primario" className="py-3 px-8 rounded-full transform mb-4 hover:scale-105 text-lg" evento={() => navegar(diapositiva.ruta)}>
             {diapositiva.textoBoton}
           </Boton>
         </div>
