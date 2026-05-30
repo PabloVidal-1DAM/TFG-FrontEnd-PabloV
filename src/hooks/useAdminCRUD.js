@@ -14,54 +14,54 @@ import useAPI from './useAPI'; // Ajusta esta ruta según la ubicación real de 
 const useAdminCRUD = (endpoint) => {
   const { obtenerDatos, enviarDatos, modificarDatos, borrarDatos, cargando } = useAPI();
   const [datos, setDatos] = useState([]);
+  
+  // --- NUEVO: ESTADO PARA EL PAGINADOR DE PRIMEREACT ---
+  const [firstRow, setFirstRow] = useState(0);
 
-  // Carga inicial y refresco de los datos
   const cargarTodo = async () => {
     try {
-      // Hacemos la petición genérica al endpoint proporcionado
-      const respuesta = await obtenerDatos(`${endpoint}?orden=created_at_desc`);
-      
-      // Laravel devuelve los arrays paginados dentro de un atributo 'data'. 
-      // Si no hay paginación, coge la respuesta directa.
+      // Añadimos per_page=1000 para que Laravel nos devuelva todos y PrimeReact ordene
+      const respuesta = await obtenerDatos(`${endpoint}?per_page=1000&orden=created_at_desc`);
       setDatos(respuesta.data || respuesta); 
     } catch (error) {
       console.error(`Error cargando ${endpoint}:`, error);
     }
   };
 
-  // Se ejecuta automáticamente la primera vez que se carga el componente que use este hook
   useEffect(() => {
     cargarTodo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endpoint]);
 
-  // Función para eliminar un registro
   const eliminarRegistro = async (id) => {
     try {
       await borrarDatos(`${endpoint}/${id}`);
-      await cargarTodo(); // Refresca la tabla automáticamente si hay éxito
+      setFirstRow(0); // Volvemos a la página 1
+      await cargarTodo(); 
     } catch (error) {
-      throw error; // Se lanza el error para que el componente visual pueda pintar un Toast
+      throw error; 
     }
   };
 
-  // Función combinada para Crear o Editar dependiendo de si le pasamos un ID
   const guardarRegistro = async (id, datosFormulario) => {
     try {
       if (id) {
-        await modificarDatos(`${endpoint}/${id}`, datosFormulario); // PUT (Edición)
+        await modificarDatos(`${endpoint}/${id}`, datosFormulario);
       } else {
-        await enviarDatos(endpoint, datosFormulario); // POST (Creación)
+        await enviarDatos(endpoint, datosFormulario);
       }
-      await cargarTodo(); // Refresca la tabla automáticamente tras guardar
+      setFirstRow(0); // Volvemos a la página 1
+      await cargarTodo(); 
     } catch (error) {
-      throw error; // Se lanza el error para que el componente visual lo capture
+      throw error; 
     }
   };
 
   return { 
     datos, 
     cargando, 
+    firstRow,    
+    setFirstRow,  
     cargarTodo, 
     eliminarRegistro, 
     guardarRegistro 

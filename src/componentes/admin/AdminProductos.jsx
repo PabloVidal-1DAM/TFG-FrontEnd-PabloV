@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
@@ -9,128 +9,35 @@ import { InputNumber } from 'primereact/inputnumber';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from 'primereact/multiselect';
-import useAPI from '../../hooks/useAPI'; 
 import Boton from '../ui/boton';
 import { formatearMoneda } from '../../functions/formatos'; 
-
-const productoVacio = {
-  nombre: '',
-  descripcion: '',
-  precio: 0,
-  stock: 0,
-  proveedor_id: null,
-  categorias: []
-};
+import { useAdminProductos } from '../../hooks/useAdminProductos'; 
 
 const AdminProductos = () => {
-  const { obtenerDatos, borrarDatos, enviarFormData, cargando } = useAPI();
-  const toast = useRef(null);
+  const {
+    toast, cargando, productos, proveedores, categorias,
+    modalVisible, setModalVisible, producto, setProducto,
+    imagenSeleccionada, setImagenSeleccionada, esEdicion,
+    abrirModalNuevo, abrirModalEdicion, guardarProducto, eliminarProducto
+  } = useAdminProductos();
 
-  const [productos, setProductos] = useState([]);
-  const [proveedores, setProveedores] = useState([]);
-  const [categorias, setCategorias] = useState([]);
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [producto, setProducto] = useState(productoVacio);
-  const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
-  const [esEdicion, setEsEdicion] = useState(false);
-
-  useEffect(() => {
-    cargarTodo();
-  }, []);
-
-  const cargarTodo = async () => {
-    try {
-      // NOTA SOBRE EL PAGINADOR: Si Laravel usa paginate(15) en su controlador, 
-      // la tabla del admin solo verá los primeros 15. 
-      // Si te pasa eso, añade un parámetro para traerlos todos de golpe: 'productos?per_page=1000'
-      const resProductos = await obtenerDatos('productos?orden=created_at_desc');
-      setProductos(resProductos.data || resProductos); 
-
-      const resProv = await obtenerDatos('proveedores');
-      setProveedores(resProv.data || resProv);
-
-      const resCat = await obtenerDatos('categorias');
-      setCategorias(resCat.data || resCat);
-    } catch (error) {
-      mostrarMensaje('error', 'Error al cargar los datos');
-    }
-  };
-
-  const mostrarMensaje = (severidad, texto) => {
-    toast.current.show({ severity: severidad, summary: severidad === 'error' ? 'Error' : 'Éxito', detail: texto, life: 3000 });
-  };
-
-  const abrirModalNuevo = () => {
-    setProducto(productoVacio);
-    setImagenSeleccionada(null);
-    setEsEdicion(false);
-    setModalVisible(true);
-  };
-
-  const abrirModalEdicion = (prodData) => {
-    const categoriasIds = prodData.categorias ? prodData.categorias.map(c => c.id) : [];
-    
-    setProducto({ ...prodData, categorias: categoriasIds });
-    setImagenSeleccionada(null); 
-    setEsEdicion(true);
-    setModalVisible(true);
-  };
-
-  const guardarProducto = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('nombre', producto.nombre);
-      formData.append('descripcion', producto.descripcion || '');
-      formData.append('precio', producto.precio);
-      formData.append('stock', producto.stock);
-      formData.append('proveedor_id', producto.proveedor_id);
-      
-      if (producto.categorias && producto.categorias.length > 0) {
-        producto.categorias.forEach((idCat, index) => {
-          formData.append(`categorias[${index}]`, idCat);
-        });
-      }
-
-      if (imagenSeleccionada) {
-        formData.append('imagen', imagenSeleccionada);
-      }
-
-      const endpoint = esEdicion ? `productos/${producto.id}` : 'productos';
-      await enviarFormData(endpoint, formData, esEdicion);
-
-      mostrarMensaje('success', `Producto ${esEdicion ? 'actualizado' : 'creado'} correctamente.`);
-      setModalVisible(false);
-      cargarTodo(); 
-    } catch (error) {
-      mostrarMensaje('error', error.message);
-    }
-  };
-
-  const confirmarEliminacion = (id) => {
+  const confirmarEliminacionVisual = (id) => {
     confirmDialog({
-      message: '¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer y eliminará el producto de los carritos activos.',
+      message: '¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.',
       header: 'Confirmar Eliminación',
       icon: 'pi pi-exclamation-triangle text-red-500',
       acceptClassName: 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded',
       rejectClassName: 'p-button-text text-gray-600 font-bold py-2 px-4',
       acceptLabel: 'Sí, eliminar',
       rejectLabel: 'Cancelar',
-      accept: async () => {
-        try {
-          await borrarDatos(`productos/${id}`);
-          mostrarMensaje('success', 'Producto eliminado con éxito.');
-          cargarTodo();
-        } catch (error) {
-          mostrarMensaje('error', 'No se pudo eliminar el producto.');
-        }
-      }
+      // Reducimos a 75vh para forzar más margen por arriba y por abajo
+      style: { width: '450px', maxHeight: '75vh'},
+      accept: () => eliminarProducto(id)
     });
   };
 
   const plantillaImagen = (fila) => {
     const src = fila.imagen_url ? `http://localhost:8095/storage/${fila.imagen_url}` : 'https://via.placeholder.com/150';
-    // 1. CORRECCIÓN: Añadido 'my-3' para dar separación vertical a las imágenes
     return <img src={src} alt={fila.nombre} className="w-16 h-16 object-cover shadow-sm rounded border my-3" />;
   };
 
@@ -145,7 +52,7 @@ const AdminProductos = () => {
       <Boton variante="primario" className="py-2 px-3 text-sm rounded-md" evento={() => abrirModalEdicion(fila)}>
         <i className="pi pi-pencil"></i>
       </Boton>
-      <Boton variante="peligro" className="py-2 px-3 text-sm bg-red-600 text-white rounded-md hover:bg-red-700" evento={() => confirmarEliminacion(fila.id)}>
+      <Boton variante="peligro" className="py-2 px-3 text-sm bg-red-600 text-white rounded-md hover:bg-red-700" evento={() => confirmarEliminacionVisual(fila.id)}>
         <i className="pi pi-trash"></i>
       </Boton>
     </div>
@@ -173,11 +80,14 @@ const AdminProductos = () => {
         dataKey="id" 
         emptyMessage="No se encontraron productos."
         className="shadow-sm rounded-lg overflow-hidden"
+        pt={{
+          bodyRow: { className: 'hover:bg-gray-50 transition-colors' },
+          bodyCell: { className: 'py-4' } 
+        }}
         loading={cargando}
       >
         <Column body={plantillaImagen} header="Imagen" />
         <Column field="nombre" header="Nombre" sortable className="font-medium" />
-        {/* 2. CORRECCIÓN: Faltaba añadir field="precio" para que funcione la ordenación */}
         <Column field="precio" body={plantillaPrecio} header="Precio" sortable />
         <Column field="stock" header="Stock" sortable />
         <Column body={plantillaCategorias} header="Categorías" />
@@ -186,14 +96,15 @@ const AdminProductos = () => {
 
       <Dialog 
         visible={modalVisible} 
-        style={{ width: '500px' }} 
         header={esEdicion ? "Editar Producto" : "Nuevo Producto"} 
         modal 
         className="p-fluid" 
         onHide={() => setModalVisible(false)}
+        // BAJAMOS A 80vh: Así ocupará como máximo el 80% de tu pantalla, dejando un 10% por arriba y un 10% por abajo.
+        style={{ width: '500px', maxHeight: '80vh' }}
+        contentStyle={{ overflowY: 'auto' }} 
       >
         <div className="space-y-5 px-4 pb-6 pt-2">
-          
           <div className="field">
             <label htmlFor="nombre" className="font-bold text-gray-700 block mb-1">Nombre</label>
             <InputText id="nombre" value={producto.nombre} onChange={(e) => setProducto({...producto, nombre: e.target.value})} required autoFocus className="w-full border border-gray-400 rounded-md p-2" />
@@ -232,12 +143,11 @@ const AdminProductos = () => {
               <small className="text-gray-500 italic mt-2 block">Deja esto vacío si quieres conservar la imagen actual.</small>
             )}
           </div>
-          
         </div>
 
         <div className="flex justify-end gap-2 mt-4 px-4">
-          <Boton variante="contorno" evento={() => setModalVisible(false)} className="py-2 px-4 rounded">Cancelar</Boton>
-          <Boton variante="primario" evento={guardarProducto} className="py-2 px-4 rounded" disabled={cargando}>
+          <Boton variante="contorno" evento={() => setModalVisible(false)} className="py-2 px-4 mb-3 rounded">Cancelar</Boton>
+          <Boton variante="primario" evento={guardarProducto} className="py-2 px-4 rounded mb-3" disabled={cargando}>
             {cargando ? <i className="pi pi-spin pi-spinner mr-2"></i> : <i className="pi pi-check mr-2"></i>}
             Guardar
           </Boton>
