@@ -1,21 +1,15 @@
 import { useState, useEffect } from 'react';
 import useAPI from './useAPI'; // Ajusta esta ruta según la ubicación real de tu archivo
 
-// ==========================================================================
-// NOTA TÉCNICA Y ARQUITECTÓNICA:
-// ¿Por qué un Custom Hook genérico y no un Contexto Global para la Administración?
+// ¿Por qué un Custom Hook genérico y no un Contexto para la Administración?
 //
-// 1. Evitar el "God Object" (Objeto Dios): Almacenar el estado de todas las tablas 
-//    (usuarios, proveedores, pedidos...) en un solo Provider global haría que la 
-//    aplicación consuma memoria innecesaria y sufra de re-renderizados constantes en toda la app.
-// 2. Principio DRY (Don't Repeat Yourself): En lugar de repetir la misma lógica de 
-//    API (cargar, crear, editar y borrar) en componentes separados para Proveedores, 
-//    Categorías o Usuarios, centralizamos toda esa lógica genérica aquí.
-// 3. Separación de Responsabilidades (Clean Code): Mantenemos los componentes 
-//    visuales (ej: AdminProveedores.jsx) completamente limpios, enfocados solo en 
+// 1. Almacenar el estado de todas las tablas (usuarios, proveedores, pedidos...) en un solo Proveedor
+//    haría que la aplicación consuma memoria innecesaria y sufra de re-renderizados constantes en toda la app.
+// 2. En lugar de repetir la misma lógica de API (cargar, crear, editar y borrar) en componentes separados para 
+//    Proveedores, Categorías o Usuarios, centralizamos toda esa lógica genérica aquí.
+// 3. Manteniene los componentes visuales (ej: AdminProveedores.jsx) completamente limpios, enfocados solo en 
 //    pintar la interfaz (Tablas, Modales), mientras este hook se encarga del "trabajo duro" 
-//    con Laravel. Solo necesitamos pasarle el 'endpoint' deseado.
-// ==========================================================================
+//    con Laravel, Solo se necesita pasarle el 'endpoint' deseado.
 
 const useAdminCRUD = (endpoint) => {
   const { obtenerDatos, enviarDatos, modificarDatos, borrarDatos, cargando } = useAPI();

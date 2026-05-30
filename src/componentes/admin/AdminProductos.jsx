@@ -41,6 +41,9 @@ const AdminProductos = () => {
 
   const cargarTodo = async () => {
     try {
+      // NOTA SOBRE EL PAGINADOR: Si Laravel usa paginate(15) en su controlador, 
+      // la tabla del admin solo verá los primeros 15. 
+      // Si te pasa eso, añade un parámetro para traerlos todos de golpe: 'productos?per_page=1000'
       const resProductos = await obtenerDatos('productos?orden=created_at_desc');
       setProductos(resProductos.data || resProductos); 
 
@@ -127,7 +130,8 @@ const AdminProductos = () => {
 
   const plantillaImagen = (fila) => {
     const src = fila.imagen_url ? `http://localhost:8095/storage/${fila.imagen_url}` : 'https://via.placeholder.com/150';
-    return <img src={src} alt={fila.nombre} className="w-16 h-16 object-cover shadow-sm rounded border" />;
+    // 1. CORRECCIÓN: Añadido 'my-3' para dar separación vertical a las imágenes
+    return <img src={src} alt={fila.nombre} className="w-16 h-16 object-cover shadow-sm rounded border my-3" />;
   };
 
   const plantillaPrecio = (fila) => <span className="font-bold text-green-700">{formatearMoneda(fila.precio)}</span>;
@@ -168,12 +172,13 @@ const AdminProductos = () => {
         rows={10} 
         dataKey="id" 
         emptyMessage="No se encontraron productos."
-        className="p-datatable-sm shadow-sm rounded-lg overflow-hidden"
+        className="shadow-sm rounded-lg overflow-hidden"
         loading={cargando}
       >
         <Column body={plantillaImagen} header="Imagen" />
         <Column field="nombre" header="Nombre" sortable className="font-medium" />
-        <Column body={plantillaPrecio} header="Precio" sortable />
+        {/* 2. CORRECCIÓN: Faltaba añadir field="precio" para que funcione la ordenación */}
+        <Column field="precio" body={plantillaPrecio} header="Precio" sortable />
         <Column field="stock" header="Stock" sortable />
         <Column body={plantillaCategorias} header="Categorías" />
         <Column body={plantillaAcciones} header="Acciones" exportable={false} style={{ minWidth: '100px' }} />
@@ -191,93 +196,38 @@ const AdminProductos = () => {
           
           <div className="field">
             <label htmlFor="nombre" className="font-bold text-gray-700 block mb-1">Nombre</label>
-            <InputText 
-              id="nombre" 
-              value={producto.nombre} 
-              onChange={(e) => setProducto({...producto, nombre: e.target.value})} 
-              required 
-              autoFocus 
-              className="w-full border border-gray-400 rounded-md p-2" 
-            />
+            <InputText id="nombre" value={producto.nombre} onChange={(e) => setProducto({...producto, nombre: e.target.value})} required autoFocus className="w-full border border-gray-400 rounded-md p-2" />
           </div>
 
           <div className="field">
             <label htmlFor="descripcion" className="font-bold text-gray-700 block mb-1">Descripción</label>
-            <InputTextarea 
-              id="descripcion" 
-              value={producto.descripcion} 
-              onChange={(e) => setProducto({...producto, descripcion: e.target.value})} 
-              rows={4} 
-              autoResize 
-              className="w-full border border-gray-400 rounded-md p-2" 
-            />
+            <InputTextarea id="descripcion" value={producto.descripcion} onChange={(e) => setProducto({...producto, descripcion: e.target.value})} rows={4} autoResize className="w-full border border-gray-400 rounded-md p-2" />
           </div>
 
           <div className="flex gap-4">
             <div className="field flex-1">
               <label htmlFor="precio" className="font-bold text-gray-700 block mb-1">Precio (€)</label>
-              {/* Para InputNumber, usamos inputClassName para aplicar la clase al input interno */}
-              <InputNumber 
-                id="precio" 
-                value={producto.precio} 
-                onValueChange={(e) => setProducto({...producto, precio: e.value})} 
-                mode="currency" 
-                currency="EUR" 
-                locale="es-ES" 
-                inputClassName="w-full border border-gray-400 rounded-md p-2" 
-                className="w-full"
-              />
+              <InputNumber id="precio" value={producto.precio} onValueChange={(e) => setProducto({...producto, precio: e.value})} mode="currency" currency="EUR" locale="es-ES" inputClassName="w-full border border-gray-400 rounded-md p-2" className="w-full" />
             </div>
             <div className="field flex-1">
               <label htmlFor="stock" className="font-bold text-gray-700 block mb-1">Stock</label>
-              <InputNumber 
-                id="stock" 
-                value={producto.stock} 
-                onValueChange={(e) => setProducto({...producto, stock: e.value})} 
-                inputClassName="w-full border border-gray-400 rounded-md p-2"
-                className="w-full"
-              />
+              <InputNumber id="stock" value={producto.stock} onValueChange={(e) => setProducto({...producto, stock: e.value})} inputClassName="w-full border border-gray-400 rounded-md p-2" className="w-full" />
             </div>
           </div>
 
           <div className="field">
             <label htmlFor="proveedor" className="font-bold text-gray-700 block mb-1">Proveedor</label>
-            <Dropdown 
-              id="proveedor" 
-              value={producto.proveedor_id} 
-              onChange={(e) => setProducto({...producto, proveedor_id: e.value})} 
-              options={proveedores} 
-              optionLabel="nombre" 
-              optionValue="id" 
-              placeholder="Selecciona un proveedor" 
-              className="w-full border border-gray-400 rounded-md items-center" 
-            />
+            <Dropdown id="proveedor" value={producto.proveedor_id} onChange={(e) => setProducto({...producto, proveedor_id: e.value})} options={proveedores} optionLabel="nombre" optionValue="id" placeholder="Selecciona un proveedor" className="w-full border border-gray-400 rounded-md items-center" />
           </div>
 
           <div className="field">
             <label htmlFor="categorias" className="font-bold text-gray-700 block mb-1">Categorías</label>
-            <MultiSelect 
-              id="categorias" 
-              value={producto.categorias} 
-              onChange={(e) => setProducto({...producto, categorias: e.value})} 
-              options={categorias} 
-              optionLabel="nombre" 
-              optionValue="id" 
-              placeholder="Asignar categorías" 
-              display="chip" 
-              className="w-full border border-gray-400 rounded-md items-center" 
-            />
+            <MultiSelect id="categorias" value={producto.categorias} onChange={(e) => setProducto({...producto, categorias: e.value})} options={categorias} optionLabel="nombre" optionValue="id" placeholder="Asignar categorías" display="chip" className="w-full border border-gray-400 rounded-md items-center" />
           </div>
 
           <div className="field">
             <label htmlFor="imagen" className="font-bold text-gray-700 block mb-1">Fotografía del Producto</label>
-            <input 
-              type="file" 
-              id="imagen" 
-              accept="image/jpeg, image/png, image/webp" 
-              onChange={(e) => setImagenSeleccionada(e.target.files[0])}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 border border-gray-400 p-2 rounded-md"
-            />
+            <input type="file" id="imagen" accept="image/jpeg, image/png, image/webp" onChange={(e) => setImagenSeleccionada(e.target.files[0])} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 border border-gray-400 p-2 rounded-md" />
             {esEdicion && !imagenSeleccionada && (
               <small className="text-gray-500 italic mt-2 block">Deja esto vacío si quieres conservar la imagen actual.</small>
             )}
