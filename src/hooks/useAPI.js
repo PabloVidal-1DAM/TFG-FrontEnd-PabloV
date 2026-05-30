@@ -107,6 +107,44 @@ const useAPI = () => {
     }
   };
 
+  // Función Específica para enviar archivos (FormData), en mi caso, se usará sobretodo para enviar imágenes de productos al servidor.
+  const enviarFormData = async (endpoint, formData, esEdicion = false) => {
+    setCargando(true);
+    try {
+      // Si se está editando, simula un "PUT" a través de un POST, ya que laravel no gestiona bien la subida de archivos en con un PUT original.
+      let metodo = "POST";
+      if (esEdicion) {
+        formData.append("_method", "PUT");
+      }
+
+      const token = localStorage.getItem("token_usuario");
+      const respuesta = await fetch(`${urlAPI}/${endpoint}`, {
+        method: metodo,
+        headers: {
+          Accept: "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+          // IMPORTANTE: Cuando usamos FormData, NO ponemos 'Content-Type'. 
+          // El navegador lo genera automáticamente con el 'boundary' necesario para archivos.
+        },
+        body: formData,
+      });
+
+      if (!respuesta.ok) {
+        if (respuesta.status === 422) {
+          const errorLaravel = await respuesta.json();
+          throw new Error(errorLaravel.message || "Error de validación en el formulario.");
+        }
+        throw new Error(`Error en el servidor: ${respuesta.status}`);
+      }
+
+      return await respuesta.json();
+    } catch (e) {
+      throw e;
+    } finally {
+      setCargando(false);
+    }
+  };
+
   const borrarDatos = async (endpoint) => {
     try {
       setCargando(true);
@@ -129,6 +167,7 @@ const useAPI = () => {
     obtenerDatos,
     enviarDatos,
     modificarDatos,
+    enviarFormData,
     borrarDatos,
     cargando,
   };
