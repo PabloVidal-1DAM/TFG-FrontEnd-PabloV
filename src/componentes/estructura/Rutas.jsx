@@ -21,6 +21,11 @@ import AdminCategoriasPadre from "../admin/AdminCategoriasPadre";
 import AdminPedidos from "../admin/AdminPedidos";
 import AdminReviews from "../admin/AdminReviews";
 
+import AvisoLegal from "../pages/AvisoLegal";
+import Privacidad from "../pages/Privacidad";
+import Cookies from "../pages/Cookies";
+import Terminos from "../pages/Terminos";
+
 import NoEncontrado from "../pages/NoEncontrado";
 
 const Rutas = () => {
@@ -50,6 +55,12 @@ const Rutas = () => {
           <Route path="pedidos" element={<AdminPedidos />} />
           <Route path="reviews" element={<AdminReviews />} />
         </Route>
+
+        {/* Rutas Legales estáticas (de las que casi nadie de acuerda, pero yo he usado un prompt rápido para generarlas). */}
+        <Route path="/legal" element={<AvisoLegal />} />
+        <Route path="/privacidad" element={<Privacidad />} />
+        <Route path="/cookies" element={<Cookies />} />
+        <Route path="/terminos" element={<Terminos />} />
 
         {/*Rutas para las NO encontradas, el error 404.*/}
         <Route path="*" element={<NoEncontrado />} />
