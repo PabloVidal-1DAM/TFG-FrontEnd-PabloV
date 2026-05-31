@@ -9,12 +9,16 @@ import { Rating } from 'primereact/rating';
 import Boton from '../ui/boton';
 import useAdminCRUD from '../../hooks/useAdminCRUD'; 
 
+// Inicializo el estado de la review vacía, aunque en este componente rara vez 
+// se usará para "crear" desde cero, sirve para resetear el formulario de forma segura.
 const reviewVacia = {
   valoracion: 0,
   comentario: ''
 };
 
 const AdminReviews = () => {
+  // Reutilizo la potencia de mi hook genérico 'useAdminCRUD' pasándole el endpoint 'reviews'.
+  // Esto me ahorra tener que reescribir toda la lógica de paginación y llamadas a la API.
   const { 
     datos: reviews, 
     cargando, 
@@ -33,14 +37,16 @@ const AdminReviews = () => {
   };
 
   const abrirModalEdicion = (revData) => {
+    // Clono el objeto de la reseña seleccionada para no mutar el estado principal de la tabla.
     setReview({ ...revData });
     setModalVisible(true);
   };
 
   const guardar = async () => {
     try {
-      // Como el admin no crea reviews, siempre enviamos un PUT con el ID.
-      // Recuerda que UpdateReviewRequest solo permite modificar 'valoracion' y 'comentario'.
+      // El administrador no crea reviews.
+      // Por lo tanto, esta función siempre actuará como un PUT (actualización) y solo envío 
+      // los campos que mi UpdateReviewRequest en Laravel permite modificar.
       await guardarRegistro(review.id, {
         valoracion: review.valoracion,
         comentario: review.comentario
@@ -52,6 +58,7 @@ const AdminReviews = () => {
     }
   };
 
+  // Eliminar una reseña puede ser necesario si contiene spam o lenguaje ofensivo.
   const confirmarEliminacionVisual = (id) => {
     confirmDialog({
       message: '¿Estás seguro de que deseas eliminar esta reseña? Esta acción no se puede deshacer.',
@@ -74,18 +81,26 @@ const AdminReviews = () => {
   };
 
   // --- PLANTILLAS VISUALES PARA LA TABLA ---
+  
+  // En lugar de mostrar un simple número (ej: "4"), integro el componente 
+  // <Rating> de PrimeReact en modo solo-lectura para que la tabla sea mucho más visual.
   const plantillaEstrellas = (fila) => {
     return <Rating value={fila.valoracion} readOnly cancel={false} className="gap-1" />;
   };
 
+  // Si un usuario elimina su cuenta, la reseña persiste en la BD.
+  // Uso este renderizado condicional para evitar que la app crashee al intentar leer `fila.user.nombre`.
   const plantillaUsuario = (fila) => {
     return fila.user ? <span className="font-semibold text-gray-800">{fila.user.nombre}</span> : <span className="text-red-400 italic">Usuario borrado</span>;
   };
 
+  // Misma protección aplicada a los productos eliminados del catálogo.
   const plantillaProducto = (fila) => {
     return fila.producto ? <span className="text-gray-600 text-sm">{fila.producto.nombre}</span> : <span className="text-red-400 italic text-sm">Producto borrado</span>;
   };
 
+  // Uso clases de Tailwind (truncate, max-w-xs) para evitar que una reseña 
+  // de 500 palabras deforme la altura de las filas.
   const plantillaComentario = (fila) => {
     return (
       <div className="max-w-xs truncate text-gray-600 text-sm" title={fila.comentario}>
@@ -115,7 +130,7 @@ const AdminReviews = () => {
           <h1 className="text-2xl font-bold text-gray-800">Moderación de Reseñas</h1>
           <p className="text-gray-500 text-sm">Consulta, modera y gestiona las opiniones de los clientes sobre los productos.</p>
         </div>
-        {/* Aquí NO hay botón de "Crear" porque el administrador no debe inventarse reviews */}
+        {/* NO incluyo el clásico botón de "Crear Nuevo", este módulo es estrictamente una herramienta de moderación, no de creación de contenido. */}
       </div>
 
       <DataTable 
@@ -141,6 +156,7 @@ const AdminReviews = () => {
         <Column body={plantillaAcciones} header="Acciones" exportable={false} style={{ width: '150px' }} />
       </DataTable>
 
+      {/* Modal de Moderación */}
       <Dialog 
         visible={modalVisible} 
         header="Editar o Moderar Reseña" 
@@ -152,13 +168,15 @@ const AdminReviews = () => {
       >
         <div className="space-y-5 px-4 pb-6 pt-2">
           
+          {/* Bloque informativo de solo lectura para darle contexto al moderador */}
           <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4 text-sm text-gray-600">
-            <p><strong>Cliente:</strong> {review.user?.nombre}</p>
-            <p><strong>Producto:</strong> {review.producto?.nombre}</p>
+            <p><strong>Cliente:</strong> {review.user?.nombre || 'Usuario Desconocido'}</p>
+            <p><strong>Producto:</strong> {review.producto?.nombre || 'Producto Descatalogado'}</p>
           </div>
 
           <div className="field flex flex-col items-center py-2">
             <label className="font-bold text-gray-700 block mb-2">Valoración en Estrellas</label>
+            {/* Permito la modificación de la valoración. Por si un cliente se equivocó y pide corregirlo. */}
             <Rating value={review.valoracion} onChange={(e) => setReview({...review, valoracion: e.value})} cancel={false} className="gap-2" />
           </div>
 

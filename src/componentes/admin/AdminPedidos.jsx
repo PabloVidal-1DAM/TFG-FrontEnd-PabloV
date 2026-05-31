@@ -7,8 +7,11 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Dropdown } from 'primereact/dropdown';
 import Boton from '../ui/boton';
 import useAdminCRUD from '../../hooks/useAdminCRUD';
-import { formatearMoneda } from '../../functions/formatos'; // Asegúrate de que la ruta sea correcta
+import { formatearMoneda } from '../../functions/formatos'; 
 
+// En esta vista no existe la función de "Crear Nuevo", ya que 
+// un administrador no debe inyectar compras ficticias en el sistema, solo gestionar 
+// el flujo de los pedidos reales que entran desde la tienda.
 const estadosDisponibles = [
   { label: 'Pendiente', value: 'pendiente' },
   { label: 'Enviado', value: 'enviado' },
@@ -16,6 +19,9 @@ const estadosDisponibles = [
 ];
 
 const AdminPedidos = () => {
+  // Sigo aprovechando la abstracción de mi hook genérico 'useAdminCRUD'.
+  // Al pasarle 'pedidos', él se encarga de conectar con la API de Laravel y manejar 
+  // la paginación para no sobrecargar el navegador si hay miles de ventas.
   const { 
     datos: pedidos, 
     cargando, 
@@ -26,6 +32,9 @@ const AdminPedidos = () => {
   } = useAdminCRUD('pedidos'); 
 
   const toast = useRef(null);
+  
+  // A diferencia de otras páginas de administración, aquí el modal es principalmente de Lectura (Detalle),
+  // y el único dato mutable es el estado del envío.
   const [modalVisible, setModalVisible] = useState(false);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
 
@@ -40,7 +49,9 @@ const AdminPedidos = () => {
 
   const guardar = async () => {
     try {
-      // Solo actualizamos el estado, que es lo que permite el backend
+      // Solo envío al backend el atributo 'estado'.
+      // Aunque alguien manipulara el estado local en React intentando cambiar el total del pedido,
+      // mi UpdatePedidoRequest en Laravel está blindado y solo procesará el campo 'estado'.
       await guardarRegistro(pedidoSeleccionado.id, { estado: pedidoSeleccionado.estado });
       mostrarMensaje('success', 'Estado del pedido actualizado correctamente.');
       setModalVisible(false);
@@ -49,6 +60,8 @@ const AdminPedidos = () => {
     }
   };
 
+  // Borrar un pedido es una acción destructiva (afecta a facturación e historial).
+  // Solo se usa para "cancelaciones" totales, por lo que pido confirmación estricta.
   const confirmarEliminacionVisual = (id) => {
     confirmDialog({
       message: '¿Estás seguro de que deseas eliminar (cancelar) este pedido? Esta acción no se puede deshacer.',
@@ -76,6 +89,8 @@ const AdminPedidos = () => {
     return <span className="text-gray-600">{fecha.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>;
   };
 
+  // Manejo de dependencias nulas: Si un usuario hace un pedido y luego elimina su cuenta,
+  // el pedido persiste en BD, pero la relación 'user' viene null. Aplico un fallback visual si ocurriese el caso, pero es raro.
   const plantillaUsuario = (fila) => {
     return fila.user ? <span className="font-semibold text-gray-800">{fila.user.nombre}</span> : <span className="text-red-400 italic">Usuario borrado</span>;
   };
@@ -84,6 +99,7 @@ const AdminPedidos = () => {
     return <span className="font-bold text-gray-800">{formatearMoneda(fila.total)}</span>;
   };
 
+  // Diseño Semántico: Utilizo un diccionario de estilos para asignar un color representativo a cada estado del pedido.
   const plantillaEstado = (fila) => {
     const estilos = {
       'pendiente': 'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -101,7 +117,7 @@ const AdminPedidos = () => {
   const plantillaAcciones = (fila) => (
     <div className="flex gap-2">
       <Boton variante="primario" className="py-2 px-3 text-sm rounded-md" evento={() => abrirModalEdicion(fila)}>
-        <i className="pi pi-eye"></i>
+        <i className="pi pi-eye"></i> 
       </Boton>
       <Boton variante="peligro" className="py-2 px-3 text-sm bg-red-600 text-white rounded-md hover:bg-red-700" evento={() => confirmarEliminacionVisual(fila.id)}>
         <i className="pi pi-trash"></i>
@@ -144,7 +160,7 @@ const AdminPedidos = () => {
         <Column body={plantillaAcciones} header="Detalles" exportable={false} style={{ width: '120px' }} />
       </DataTable>
 
-      {/* MODAL DE DETALLE Y EDICIÓN */}
+      {/* MODAL DE DETALLE Y EDICIÓN LOGÍSTICA */}
       <Dialog 
         visible={modalVisible} 
         header="Detalle del Pedido" 
@@ -157,7 +173,7 @@ const AdminPedidos = () => {
         {pedidoSeleccionado && (
           <div className="space-y-6 px-4 pb-6 pt-2">
             
-            {/* Cabecera Informativa */}
+            {/* Cabecera Informativa (Solo Lectura) */}
             <div className="bg-gray-50 p-4 rounded-md border border-gray-200 text-sm text-gray-700 grid grid-cols-2 gap-4">
               <div>
                 <p className="text-xs text-gray-500 uppercase font-bold mb-1">Cliente</p>
@@ -170,7 +186,7 @@ const AdminPedidos = () => {
               </div>
             </div>
 
-            {/* Cambio de Estado */}
+            {/* Zona Interactiva: Cambio de Estado */}
             <div className="field">
               <label htmlFor="estado" className="font-bold text-gray-700 block mb-2">Estado del Envío</label>
               <Dropdown 
@@ -178,7 +194,10 @@ const AdminPedidos = () => {
                 value={pedidoSeleccionado.estado} 
                 onChange={(e) => setPedidoSeleccionado({...pedidoSeleccionado, estado: e.value})} 
                 options={estadosDisponibles} 
-                disabled={pedidoSeleccionado.estado === 'entregado'} // Bloqueamos si ya está entregado, según el backend
+                // Si el pedido ya está entregado, desactivo el control. 
+                // Laravel también rechazaría la petición, pero hacerlo 
+                // aquí mejora la interfaz evitando clics frustrantes.
+                disabled={pedidoSeleccionado.estado === 'entregado'} 
                 className="w-full border border-gray-400 rounded-md" 
               />
               {pedidoSeleccionado.estado === 'entregado' && (
@@ -186,17 +205,21 @@ const AdminPedidos = () => {
               )}
             </div>
 
-            {/* Lista de Artículos */}
+            {/* Lista de Artículos (Renderizado del objeto anidado) */}
             <div>
               <h3 className="font-bold text-gray-700 mb-3 border-b pb-2">Artículos del Pedido</h3>
               <ul className="space-y-3">
                 {pedidoSeleccionado.items?.map((item) => (
                   <li key={item.id} className="flex justify-between items-center text-sm">
                     <div className="flex flex-col">
-                      <span className="font-medium text-gray-800">{item.producto?.nombre || 'Producto borrado'}</span>
+                      {/* Si un admin elimina un producto del catálogo, el historial del pedido 
+                      debe mantenerse intacto aunque la relación del producto falle. */}
+                      <span className="font-medium text-gray-800">{item.producto?.nombre || 'Producto descatalogado'}</span>
                       <span className="text-gray-500">{item.cantidad} x {formatearMoneda(item.precio_historico)}</span>
                     </div>
                     <span className="font-bold text-gray-700">
+                      {/* Calculo el subtotal al vuelo usando el precio histórico (al momento de la compra), 
+                          no el precio actual del producto, garantizando la validez contable. */}
                       {formatearMoneda(item.cantidad * item.precio_historico)}
                     </span>
                   </li>
@@ -212,6 +235,7 @@ const AdminPedidos = () => {
             variante="primario" 
             evento={guardar} 
             className="py-2 px-4 rounded mb-3" 
+            // Bloqueo también el botón de guardar si el estado es final.
             disabled={cargando || pedidoSeleccionado?.estado === 'entregado'}
           >
             {cargando ? <i className="pi pi-spin pi-spinner mr-2"></i> : <i className="pi pi-check mr-2"></i>}

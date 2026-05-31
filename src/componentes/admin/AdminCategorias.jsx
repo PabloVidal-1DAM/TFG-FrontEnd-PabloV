@@ -9,8 +9,9 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import Boton from '../ui/boton';
 import useAdminCRUD from '../../hooks/useAdminCRUD'; 
-import useAPI from '../../hooks/useAPI'; // Añadimos esto para la petición secundaria
+import useAPI from '../../hooks/useAPI'; 
 
+// Estado base para limpiar el formulario cuando se crea una nueva subcategoría.
 const categoriaVacia = {
   nombre: '',
   descripcion: '',
@@ -18,7 +19,8 @@ const categoriaVacia = {
 };
 
 const AdminCategorias = () => {
-  // 1. Hook genérico para la entidad principal
+  // Uso mi hook genérico 'useAdminCRUD' exclusivamente para gestionar el ciclo de vida 
+  // de la entidad principal de esta vista (las categorías normales).
   const { 
     datos: categorias, 
     cargando: cargandoCategorias, 
@@ -28,7 +30,9 @@ const AdminCategorias = () => {
     guardarRegistro 
   } = useAdminCRUD('categorias'); 
 
-  // 2. Extraemos obtenerDatos para la lista del Dropdown
+  // Extraigo 'obtenerDatos' de mi hook base 'useAPI' para hacer una petición secundaria.
+  // ¿Y porque?: No metí esta petición dentro de 'useAdminCRUD' para mantenerlo 
+  // completamente agnóstico y reutilizable. Combino ambos hooks aquí en la vista.
   const { obtenerDatos } = useAPI();
   const [categoriasPadre, setCategoriasPadre] = useState([]);
 
@@ -37,10 +41,12 @@ const AdminCategorias = () => {
   const [categoria, setCategoria] = useState(categoriaVacia);
   const [esEdicion, setEsEdicion] = useState(false);
 
-  // 3. Cargamos las Categorías Padre al montar el componente (para el Dropdown)
+  // Uso un useEffect para cargar la lista de categorías padre solo una vez cuando el componente se monta en el DOM.
+  // Así evito peticiones redundantes al servidor en cada renderizado.
   useEffect(() => {
     const cargarPadres = async () => {
       try {
+        // Pido 1000 registros para asegurarme de que el Dropdown muestre todas las opciones disponibles.
         const respuesta = await obtenerDatos('categoria-padres?per_page=1000');
         setCategoriasPadre(respuesta.data || respuesta);
       } catch (error) {
@@ -98,6 +104,8 @@ const AdminCategorias = () => {
   };
 
   // --- PLANTILLAS VISUALES ---
+  // Facilito la lectura de la tabla añadiendo un badge visual si la categoría 
+  // pertenece a un Padre, o un texto gris en cursiva si es una categoría huérfana.
   const plantillaPadre = (fila) => {
     return fila.categoria_padre ? (
       <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded border border-blue-200">
@@ -151,6 +159,8 @@ const AdminCategorias = () => {
         loading={cargandoCategorias}
       >
         <Column field="nombre" header="Nombre" sortable className="font-medium" />
+        {/* Indico sortField="categoria_padre.nombre" para que PrimeReact sepa ordenar por 
+            la propiedad anidada del objeto en lugar del objeto en sí. */}
         <Column body={plantillaPadre} header="Categoría Principal" sortable sortField="categoria_padre.nombre" />
         <Column field="descripcion" header="Descripción" />
         <Column body={plantillaAcciones} header="Acciones" exportable={false} style={{ width: '150px' }} />
@@ -169,6 +179,7 @@ const AdminCategorias = () => {
           
           <div className="field">
             <label htmlFor="categoria_padre" className="font-bold text-gray-700 block mb-1">Categoría Principal (Padre)</label>
+            {/* Vinculo el Dropdown al estado 'categoriasPadre' que cargué en el useEffect. */}
             <Dropdown 
               id="categoria_padre" 
               value={categoria.categoria_padre_id} 
@@ -195,6 +206,8 @@ const AdminCategorias = () => {
 
           <div className="field">
             <label htmlFor="descripcion" className="font-bold text-gray-700 block mb-1">Descripción</label>
+            {/* Fallback de seguridad (|| ''): Si la descripción es null, React no lanzará un warning 
+                sobre un componente cambiando de uncontrolled a controlled. */}
             <InputTextarea 
               id="descripcion" 
               value={categoria.descripcion || ''} 

@@ -15,17 +15,17 @@ const usuarioVacio = {
   email: '',
   telefono: '',
   password: '',
-  rol: 'usuario' // Por defecto
+  rol: 'usuario' // Asigno el rol de menor privilegio por defecto por seguridad.
 };
 
-// Roles disponibles en tu aplicación (ajústalos si tienes más)
+// Roles físicos de la aplicación.
 const rolesDisponibles = [
   { label: 'Administrador', value: 'admin' },
   { label: 'Usuario Estándar', value: 'usuario' }
 ];
 
 const AdminUsuarios = () => {
-  // ATENCIÓN: Asegúrate de que el endpoint sea 'users' o 'usuarios' según tu routes/api.php
+  // Reutilizo mi hook genérico para la lógica CRUD. Apunto al endpoint 'users' de Laravel.
   const { 
     datos: usuarios, 
     cargando, 
@@ -40,6 +40,7 @@ const AdminUsuarios = () => {
   const [usuario, setUsuario] = useState(usuarioVacio);
   const [esEdicion, setEsEdicion] = useState(false);
 
+  // Centralizo las notificaciones Toast para no repetir la estructura en cada bloque try/catch
   const mostrarMensaje = (severidad, texto) => {
     toast.current?.show({ severity: severidad, summary: severidad === 'error' ? 'Error' : 'Éxito', detail: texto, life: 3000 });
   };
@@ -51,12 +52,15 @@ const AdminUsuarios = () => {
   };
 
   const abrirModalEdicion = (userData) => {
-    // Buscamos el rol actual del usuario (Spatie devuelve un array de roles)
+    // Spatie Permission en Laravel devuelve los roles dentro de un array.
+    // Extraigo el primer rol de forma segura, o aplico 'usuario' como fallback si algo falla.
     const rolActual = userData.roles && userData.roles.length > 0 ? userData.roles[0].name : 'usuario';
     
     setUsuario({ 
       ...userData, 
-      password: '', // Vaciamos la contraseña por seguridad
+      // Por seguridad, NUNCA expongo la contraseña real en el front. La dejo vacía 
+      // y si el admin la rellena, Laravel entenderá que quiere sobreescribirla.
+      password: '', 
       rol: rolActual 
     });
     setEsEdicion(true);
@@ -65,7 +69,8 @@ const AdminUsuarios = () => {
 
   const guardar = async () => {
     try {
-      // Validaciones básicas de front
+      // Seguridad en Front-End: Si es un usuario nuevo, la contraseña es obligatoria.
+      // Así evitamos llamadas fallidas innecesarias al backend.
       if (!esEdicion && (!usuario.password || usuario.password.length < 6)) {
         throw new Error("La contraseña es obligatoria y debe tener al menos 6 caracteres.");
       }
@@ -100,6 +105,9 @@ const AdminUsuarios = () => {
   };
 
   // --- PLANTILLAS VISUALES ---
+  
+  // Utilizo una plantilla visual para destacar rápidamente a los administradores
+  // en la tabla usando un sistema de badges de colores.
   const plantillaRol = (fila) => {
     const esAdmin = fila.roles?.some(r => r.name === 'admin');
     return esAdmin ? (
@@ -158,6 +166,7 @@ const AdminUsuarios = () => {
         <Column field="nombre" header="Nombre" sortable className="font-medium" />
         <Column field="email" header="Email" sortable />
         <Column field="telefono" header="Teléfono" sortable />
+        {/* Ordeno por el primer rol asignado (Spatie) */}
         <Column body={plantillaRol} header="Rol" sortable sortField="roles[0].name" />
         <Column body={plantillaAcciones} header="Acciones" exportable={false} style={{ minWidth: '100px' }} />
       </DataTable>
@@ -198,6 +207,8 @@ const AdminUsuarios = () => {
             <label htmlFor="password" className="font-bold text-gray-700 block mb-1">
               Contraseña {esEdicion && <span className="text-gray-400 font-normal text-sm">(Dejar en blanco para mantener la actual)</span>}
             </label>
+            {/* He desactivado el feedback de seguridad del componente Password de PrimeReact:
+                (barras de colores) para mantener el formulario más limpio, ya que el admin se supone que sabe formar una buena contraaseña, y si no, el backend avisará. */}
             <Password 
               id="password" 
               value={usuario.password} 

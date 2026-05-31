@@ -14,6 +14,9 @@ import { formatearMoneda } from '../../functions/formatos';
 import { useAdminProductos } from '../../hooks/useAdminProductos'; 
 
 const AdminProductos = () => {
+  // Extraigo toda la lógica compleja (estados, peticiones HTTP, FormData para imágenes) 
+  // en mi custom hook 'useAdminProductos' para cumplir con el principio de Responsabilidad Única.
+  // Así mantengo este componente enfocado exclusivamente en renderizar la interfaz (UI).
   const {
     toast, cargando, productos, proveedores, categorias,
     modalVisible, setModalVisible, producto, setProducto,
@@ -21,6 +24,7 @@ const AdminProductos = () => {
     abrirModalNuevo, abrirModalEdicion, guardarProducto, eliminarProducto
   } = useAdminProductos();
 
+  // Función que se importa junto al componente de ventana modal de prime react para darle un estilo personalizado a la ventana.
   const confirmarEliminacionVisual = (id) => {
     confirmDialog({
       message: '¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.',
@@ -30,12 +34,13 @@ const AdminProductos = () => {
       rejectClassName: 'p-button-text text-gray-600 font-bold py-2 px-4',
       acceptLabel: 'Sí, eliminar',
       rejectLabel: 'Cancelar',
-      // Reducimos a 75vh para forzar más margen por arriba y por abajo
       style: { width: '450px', maxHeight: '75vh'},
       accept: () => eliminarProducto(id)
     });
   };
 
+  // Plantilla para la imagen: Si el producto no tiene foto, renderizo un placeholder por defecto
+  // directamente en la tabla para mantener la estructura visual y que no quede una celda vacía.
   const plantillaImagen = (fila) => {
     const src = fila.imagen_url ? `http://localhost:8095/storage/${fila.imagen_url}` : 'https://via.placeholder.com/150';
     return <img src={src} alt={fila.nombre} className="w-16 h-16 object-cover shadow-sm rounded border my-3" />;
@@ -43,6 +48,8 @@ const AdminProductos = () => {
 
   const plantillaPrecio = (fila) => <span className="font-bold text-green-700">{formatearMoneda(fila.precio)}</span>;
   
+  // Como un producto puede tener N categorías (relación N:M), recorro el array y 
+  // pinto un "chip" de Tailwind por cada una para que sea más fácil de leer.
   const plantillaCategorias = (fila) => {
     return fila.categorias?.map(c => <span key={c.id} className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-1 inline-block mb-1">{c.nombre}</span>);
   };
@@ -73,6 +80,8 @@ const AdminProductos = () => {
         </Boton>
       </div>
 
+      {/* Tabla principal: He optado por inyectar clases de Tailwind directamente en los 
+          elementos internos de PrimeReact usando Pass-Through (pt) para mejorar el espaciado. */}
       <DataTable 
         value={productos} 
         paginator 
@@ -100,7 +109,6 @@ const AdminProductos = () => {
         modal 
         className="p-fluid" 
         onHide={() => setModalVisible(false)}
-        // BAJAMOS A 80vh: Así ocupará como máximo el 80% de tu pantalla, dejando un 10% por arriba y un 10% por abajo.
         style={{ width: '500px', maxHeight: '80vh' }}
         contentStyle={{ overflowY: 'auto' }} 
       >
@@ -118,6 +126,8 @@ const AdminProductos = () => {
           <div className="flex gap-4">
             <div className="field flex-1">
               <label htmlFor="precio" className="font-bold text-gray-700 block mb-1">Precio (€)</label>
+              {/* Uso InputNumber en lugar del input de texto estándar para forzar validaciones numéricas 
+                  y mostrar automáticamente el formato de moneda EUR. */}
               <InputNumber id="precio" value={producto.precio} onValueChange={(e) => setProducto({...producto, precio: e.value})} mode="currency" currency="EUR" locale="es-ES" inputClassName="w-full border border-gray-400 rounded-md p-2" className="w-full" />
             </div>
             <div className="field flex-1">
@@ -138,6 +148,8 @@ const AdminProductos = () => {
 
           <div className="field">
             <label htmlFor="imagen" className="font-bold text-gray-700 block mb-1">Fotografía del Producto</label>
+            {/* Decidí usar un input file nativo de HTML en lugar de componentes complejos de librerías, 
+                ya que permite capturar el archivo físico limpiamente para mi objeto FormData en el hook. */}
             <input type="file" id="imagen" accept="image/jpeg, image/png, image/webp" onChange={(e) => setImagenSeleccionada(e.target.files[0])} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 border border-gray-400 p-2 rounded-md" />
             {esEdicion && !imagenSeleccionada && (
               <small className="text-gray-500 italic mt-2 block">Deja esto vacío si quieres conservar la imagen actual.</small>

@@ -8,11 +8,8 @@ import useContextSesion from "../../hooks/useContextSesion";
 
 // Componente creado para representar a la ruta dinámica del proveedor que se seleccione en el componente Proveedor.
 const DetalleProveedor = () => {
-  const { id } = useParams(); // Captura el id dinámico de la URL
-
-  // Extraemos los estados y funciones del proveedor de contexto de la entidad
-  const { proveedorSeleccionado, cargarDetalle, cargando } =
-    useContextProveedores();
+  const { id } = useParams(); 
+  const { proveedorSeleccionado, cargarDetalle, cargando } = useContextProveedores();
   const { navegar, sesionIniciada } = useContextSesion();
 
   useEffect(() => {

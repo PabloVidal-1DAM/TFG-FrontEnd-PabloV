@@ -17,6 +17,9 @@ const proveedorVacio = {
 };
 
 const AdminProveedores = () => {
+  // Utilizo mi Custom Hook 'useAdminCRUD' pasándole el endpoint 'proveedores'.
+  // Esto me permite abstraer toda la lógica de llamadas HTTP, paginación local y estados de carga.
+  // Cumplo así el principio DRY y el principio de Responsabilidad Única, creo vamos...
   const { 
     datos: proveedores, 
     cargando, 
@@ -28,10 +31,13 @@ const AdminProveedores = () => {
 
   const toast = useRef(null);
 
+  // Estados locales exclusivos para la interfaz gráfica.
   const [modalVisible, setModalVisible] = useState(false);
   const [proveedor, setProveedor] = useState(proveedorVacio);
   const [esEdicion, setEsEdicion] = useState(false);
 
+  // Centralizo la lógica de notificaciones Toast, ya que es fundamental
+  //  dar feedback inmediato al administrador sobre el resultado de sus acciones.
   const mostrarMensaje = (severidad, texto) => {
     toast.current?.show({ severity: severidad, summary: severidad === 'error' ? 'Error' : 'Éxito', detail: texto, life: 3000 });
   };
@@ -43,6 +49,8 @@ const AdminProveedores = () => {
   };
 
   const abrirModalEdicion = (provData) => {
+    // Se clona el objeto provData con el spread operator {...provData} para no mutar 
+    // el estado original de la tabla accidentalmente si el usuario cancela la edición.
     setProveedor({ ...provData });
     setEsEdicion(true);
     setModalVisible(true);
@@ -50,6 +58,8 @@ const AdminProveedores = () => {
 
   const guardar = async () => {
     try {
+      // Delego el guardado al hook. Si 'esEdicion' es true, le paso el ID para que haga un PUT.
+      // Si es false, le paso null para que haga un POST (creación).
       await guardarRegistro(esEdicion ? proveedor.id : null, proveedor);
       mostrarMensaje('success', `Proveedor ${esEdicion ? 'actualizado' : 'creado'} correctamente.`);
       setModalVisible(false);
@@ -58,6 +68,7 @@ const AdminProveedores = () => {
     }
   };
 
+  // Ventana modal antes de borrar el proveedor con el componente de prime react, esta es la plantilla visual custom que he hecho.
   const confirmarEliminacionVisual = (id) => {
     confirmDialog({
       message: '¿Estás seguro de que deseas eliminar este proveedor? Esta acción no se puede deshacer.',
@@ -79,6 +90,7 @@ const AdminProveedores = () => {
     });
   };
 
+  // Plantilla para la columna de acciones. Se inyecta en cada fila del DataTable como botones.
   const plantillaAcciones = (fila) => (
     <div className="flex gap-2">
       <Boton variante="primario" className="py-2 px-3 text-sm rounded-md" evento={() => abrirModalEdicion(fila)}>
@@ -92,6 +104,7 @@ const AdminProveedores = () => {
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      {/* Elementos flotantes manejados por referencia */}
       <Toast ref={toast} />
       <ConfirmDialog /> 
       
@@ -105,6 +118,10 @@ const AdminProveedores = () => {
         </Boton>
       </div>
 
+      {/* DataTable: Hago uso de la propiedad 'pt' (Pass-Through) nativa de PrimeReact 
+          para inyectar clases de Tailwind directamente en el DOM interno de la tabla. 
+          Esto me permite dar mayor "aire" y espaciado (py-5, px-6) a las filas, evitando 
+          el diseño apelmazado por defecto que me ha pasado tantísimas veces ya. */}
       <DataTable 
         value={proveedores} 
         paginator 
@@ -116,9 +133,7 @@ const AdminProveedores = () => {
         className="shadow-sm rounded-lg overflow-hidden"
         pt={{
           headerCell: { className: 'py-4 px-6 bg-gray-50 text-gray-700 font-bold' },
-          // Aumentamos el padding vertical de las filas y añadimos una pequeña separación visual
           bodyRow: { className: 'hover:bg-gray-50 transition-colors border-b border-gray-100' },
-          // Aumentamos el padding vertical (py-5) para que los datos no estén tan pegados
           bodyCell: { className: 'py-5 px-6 text-gray-600' } 
         }}
         loading={cargando}
@@ -130,6 +145,8 @@ const AdminProveedores = () => {
         <Column body={plantillaAcciones} header="Acciones" exportable={false} style={{ minWidth: '100px' }} />
       </DataTable>
 
+      {/* Reutilizo el mismo Dialog tanto para Crear como para Editar, 
+          apoyándome en el estado 'esEdicion' para cambiar títulos y lógicas. */}
       <Dialog 
         visible={modalVisible} 
         header={esEdicion ? "Editar Proveedor" : "Nuevo Proveedor"} 

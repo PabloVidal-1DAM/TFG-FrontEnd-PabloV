@@ -8,12 +8,16 @@ import { InputText } from 'primereact/inputtext';
 import Boton from '../ui/boton';
 import useAdminCRUD from '../../hooks/useAdminCRUD';
 
+// Estado inicial vacío para resetear el formulario.
+// Al ser una entidad que no depende de nadie, su estructura es mínima.
 const categoriaVacia = {
   nombre: ''
 };
 
 const AdminCategoriasPadre = () => {
-  // 1. Hook genérico apuntando al endpoint de categorias padre
+  // Deleto toda la lógica de estado (fetching, paginación, carga)
+  // a mi hook genérico 'useAdminCRUD'. Solo tengo que pasarle el endpoint base 
+  // ('categoria-padres') y él se encarga del resto.
   const { 
     datos: categorias, 
     cargando, 
@@ -24,10 +28,13 @@ const AdminCategoriasPadre = () => {
   } = useAdminCRUD('categoria-padres'); 
 
   const toast = useRef(null);
+  
+  // Estados para controlar la visibilidad del modal y los datos en vivo del formulario.
   const [modalVisible, setModalVisible] = useState(false);
   const [categoria, setCategoria] = useState(categoriaVacia);
   const [esEdicion, setEsEdicion] = useState(false);
 
+  // Helper para lanzar notificaciones visuales (Toast) sin repetir código.
   const mostrarMensaje = (severidad, texto) => {
     toast.current?.show({ severity: severidad, summary: severidad === 'error' ? 'Error' : 'Éxito', detail: texto, life: 3000 });
   };
@@ -39,6 +46,7 @@ const AdminCategoriasPadre = () => {
   };
 
   const abrirModalEdicion = (catData) => {
+    // Uso el spread operator para clonar el objeto y evitar mutar el estado de la tabla directamente.
     setCategoria({ ...catData });
     setEsEdicion(true);
     setModalVisible(true);
@@ -46,6 +54,7 @@ const AdminCategoriasPadre = () => {
 
   const guardar = async () => {
     try {
+      // El hook decide automáticamente si enviar un POST o un PUT basándose en si le paso un ID o null.
       await guardarRegistro(esEdicion ? categoria.id : null, categoria);
       mostrarMensaje('success', `Categoría ${esEdicion ? 'actualizada' : 'creada'} correctamente.`);
       setModalVisible(false);
@@ -54,9 +63,11 @@ const AdminCategoriasPadre = () => {
     }
   };
 
+  // El borrar una Categoría Padre es peligroso porque puede dejar subcategorías huérfanas o 
+  // eliminar productos en cascada, por eso, exijo una confirmación explícita mediante un Dialog con estilo de advertencia (rojo).
   const confirmarEliminacionVisual = (id) => {
     confirmDialog({
-      message: '¿Estás seguro de que deseas eliminar esta categoría? Esta acción no se puede deshacer.',
+      message: '¿Estás seguro de que deseas eliminar esta categoría? Esta acción no se puede deshacer y puede afectar a las subcategorías vinculadas.',
       header: 'Confirmar Eliminación',
       icon: 'pi pi-exclamation-triangle text-red-500',
       acceptClassName: 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded',
@@ -75,6 +86,7 @@ const AdminCategoriasPadre = () => {
     });
   };
 
+  // Columna inyectada con los botones de acción para cada fila.
   const plantillaAcciones = (fila) => (
     <div className="flex gap-2">
       <Boton variante="primario" className="py-2 px-3 text-sm rounded-md" evento={() => abrirModalEdicion(fila)}>
@@ -94,7 +106,7 @@ const AdminCategoriasPadre = () => {
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Categorías Padre</h1>
-          <p className="text-gray-500 text-sm">Gestiona las categorías principales del catálogo.</p>
+          <p className="text-gray-500 text-sm">Gestiona las categorías principales (Top-Level) del catálogo.</p>
         </div>
         <Boton variante="primario" className="py-2 px-4 rounded-md shadow-sm" evento={abrirModalNuevo}>
           <i className="pi pi-plus mr-2"></i> Nueva Categoría
@@ -110,6 +122,8 @@ const AdminCategoriasPadre = () => {
         dataKey="id" 
         emptyMessage="No se encontraron categorías."
         className="shadow-sm rounded-lg overflow-hidden"
+        // Utilizo el Pass-Through (pt) nativo de PrimeReact 
+        // para dar más espacio interno (padding) a las celdas y mejorar la legibilidad.
         pt={{
           headerCell: { className: 'py-4 px-6 bg-gray-50 text-gray-700 font-bold' },
           bodyRow: { className: 'hover:bg-gray-50 transition-colors border-b border-gray-100' },
@@ -121,6 +135,7 @@ const AdminCategoriasPadre = () => {
         <Column body={plantillaAcciones} header="Acciones" exportable={false} style={{ width: '150px' }} />
       </DataTable>
 
+      {/* Modal Reutilizable, sirve tanto para la acción de Crear como para la de Editar. */}
       <Dialog 
         visible={modalVisible} 
         header={esEdicion ? "Editar Categoría" : "Nueva Categoría"} 
