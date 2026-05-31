@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import useAPI from "../../hooks/useAPI";
 import useContextSesion from "../../hooks/useContextSesion";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { Paginator } from "primereact/paginator";
 import Boton from "../ui/boton";
 import useContextPedidos from "../../hooks/useContextPedidos";
 import Pedido from "./Pedido";
@@ -9,7 +10,15 @@ import Pedido from "./Pedido";
 // Componente que se encarga de mostrar la lista de pedidos hechos del usuario
 const Pedidos = () => {
   const { sesionIniciada, navegar } = useContextSesion();
-  const { historialPedidos, cargarPedidosUsuario, cargando } = useContextPedidos();
+
+  const {
+    historialPedidos,
+    cargarPedidosUsuario,
+    cargando,
+    totalPedidos,
+    primerElemento,
+    alCambiarPaginaPedido,
+  } = useContextPedidos();
 
   // Se Protege la ruta, si no hay sesión, le echamos al inicio, ya que es una función para los logeados.
   useEffect(() => {
@@ -37,7 +46,6 @@ const Pedidos = () => {
           />
         </div>
       ) : (
-        // Contenido de la página:
         <div className="max-w-5xl mx-auto px-4 py-12 min-h-screen">
           <h1 className="text-3xl font-extrabold text-gray-900 mb-8 border-b pb-4">
             Mi Historial de Pedidos
@@ -52,7 +60,6 @@ const Pedidos = () => {
               <p className="text-gray-500 mb-6">
                 Explora nuestro catálogo para encontrar tus productos favoritos.
               </p>
-              {/* Se envuelve el botón en un flex centrado para que aparezca en el centro de la pantalla */}
               <div className="flex justify-center">
                 <Boton
                   variante="primario"
@@ -64,11 +71,27 @@ const Pedidos = () => {
               </div>
             </div>
           ) : (
-            <div className="space-y-6">
-              {historialPedidos.map((pedido) =>{
-                return <Pedido key={pedido.id} pedido={pedido} />
-              })}
-            </div>
+            <>
+              {/* Lista de pedidos. */}
+              <div className="space-y-6">
+                {historialPedidos.map((pedido) => {
+                  return <Pedido key={pedido.id} pedido={pedido} />;
+                })}
+              </div>
+
+              {/* Solo se muestra si hay más pedidos que el límite de 15, que es el número máximo de pedidos por página que se ha configurado en laravel. */}
+              {totalPedidos > 15 && (
+                <div className="mt-10 flex justify-center bg-white rounded-xl shadow-sm border border-gray-100 p-2">
+                  <Paginator
+                    first={primerElemento}
+                    rows={15}
+                    totalRecords={totalPedidos}
+                    onPageChange={alCambiarPaginaPedido}
+                    className="bg-transparent border-none"
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       )}

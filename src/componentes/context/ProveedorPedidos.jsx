@@ -20,6 +20,10 @@ const ProveedorPedidos = ({ children }) => {
   // Estado que guardará la lista de pedidos que pertenece al usuario de la sesión.
   const [historialPedidos, setHistorialPedidos] = useState([]);
 
+  // Estados para la paginación de prime react para los pedidos.
+  const [totalPedidos, setTotalPedidos] = useState(0);
+  const [primerElemento, setPrimerElemento] = useState(0);
+
   // Cada vez que el estado del carrito cambie, se guarda en local.
   useEffect(() => {
     localStorage.setItem(
@@ -116,16 +120,25 @@ const ProveedorPedidos = ({ children }) => {
   // --- Comunicación con Laravel al mandar los datos del localStorage al servidor para guardar el pedido ---
 
   // Obtiene los pedidos del usuario logueado
-  const cargarPedidosUsuario = async () => {
+  const cargarPedidosUsuario = async (pagina = 1) => {
     try {
-      const data = await obtenerDatos("pedidos");
-      setHistorialPedidos(data);
+      const respuesta = await obtenerDatos(`pedidos?page=${pagina}`);
+      setHistorialPedidos(respuesta.data || respuesta);
+      // Guardamos el total de registros para que PrimeReact sepa cuántas páginas dibujar
+      setTotalPedidos(respuesta.total || 0); 
     } catch (error) {
       ponerMensaje(
         "error",
         "Error al cargar tu historial de pedidos: " + error.message,
       );
     }
+  };
+
+  // Función para poder interactuar con el paginador de prime react y pasar las páginas.
+  const alCambiarPaginaPedido = (evento) => {
+    setPrimerElemento(evento.first);
+    cargarPedidosUsuario(evento.page + 1); // PrimeReact empieza en 0, Laravel en 1
+    window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll suave arriba
   };
 
   const tramitarPedido = async () => {
@@ -156,7 +169,8 @@ const ProveedorPedidos = ({ children }) => {
       setCarritoCompra([]);
       ponerMensaje("success", "¡Pedido realizado con éxito!");
 
-      // Tras comprar, se refresca el historial en segundo plano
+      // Tras comprar, reseteamos la paginación a la página 1 y recargamos
+      setPrimerElemento(0);
       await cargarPedidosUsuario();
 
       navegar("/pedidos");
@@ -180,7 +194,12 @@ const ProveedorPedidos = ({ children }) => {
     tramitarPedido,
     historialPedidos,
     cargarPedidosUsuario,
-    cargando
+    cargando,
+
+    // Paginación de prime react.
+    totalPedidos,
+    primerElemento,
+    alCambiarPaginaPedido
   };
   return (
     <contextoPedido.Provider value={datos}>{children}</contextoPedido.Provider>
