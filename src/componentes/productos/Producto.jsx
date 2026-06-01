@@ -7,7 +7,7 @@ import useContextSesion from "../../hooks/useContextSesion";
 import useContextPedidos from "../../hooks/useContextPedidos";
 
 const Producto = ({ producto }) => {
-  const urlImagen = `http://localhost:8095/storage/${producto.imagen_url}`;
+  const urlImagen = `${import.meta.env.VITE_BASE_URL}/storage/${producto.imagen_url}`;
   const {navegar} = useContextSesion();
   const {agregarAlCarrito} = useContextPedidos();
 

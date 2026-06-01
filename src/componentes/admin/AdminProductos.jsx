@@ -42,7 +42,7 @@ const AdminProductos = () => {
   // Plantilla para la imagen: Si el producto no tiene foto, renderizo un placeholder por defecto
   // directamente en la tabla para mantener la estructura visual y que no quede una celda vacía.
   const plantillaImagen = (fila) => {
-    const src = fila.imagen_url ? `http://localhost:8095/storage/${fila.imagen_url}` : 'https://via.placeholder.com/150';
+    const src = fila.imagen_url ? `${import.meta.env.VITE_BASE_URL}/storage/${fila.imagen_url}` : 'https://via.placeholder.com/150';
     return <img src={src} alt={fila.nombre} className="w-16 h-16 object-cover shadow-sm rounded border my-3" />;
   };
 

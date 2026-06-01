@@ -28,7 +28,6 @@ export const useAdminProductos = () => {
 
   useEffect(() => {
     cargarTodo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const cargarTodo = async () => {

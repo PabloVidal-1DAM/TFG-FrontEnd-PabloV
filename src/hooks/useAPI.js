@@ -3,7 +3,7 @@ import { useState } from "react";
 
 // Hook personalizado que maneja la comunicación con laravel, usando funciones genericas para obtener, enviar y modificar datos.
 const useAPI = () => {
-  const urlAPI = "http://localhost:8095/api";
+  const urlAPI = import.meta.env.VITE_API_URL;
   const [cargando, setCargando] = useState(false);
 
   // Función auxiliar para montar las cabeceras con el token del backend que le pertenece al usuario
