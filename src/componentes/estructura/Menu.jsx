@@ -15,7 +15,7 @@ const Menu = () => {
           className={({ isActive }) =>
             isActive
               ? "text-terciario font-bold transition"
-              : "text-white hover:text-terciario hover:font-bold transition"
+              : "text-white hover:text-terciario transition"
           }
         >
           Catálogo
@@ -26,7 +26,7 @@ const Menu = () => {
           className={({ isActive }) =>
             isActive
               ? "text-terciario font-bold transition"
-              : "text-white hover:text-terciario hover:font-bold transition"
+              : "text-white hover:text-terciario transition"
           }
         >
           Nosotros
@@ -37,7 +37,7 @@ const Menu = () => {
           className={({ isActive }) =>
             isActive
               ? "text-terciario font-bold transition"
-              : "text-white hover:text-terciario hover:font-bold transition"
+              : "text-white hover:text-terciario transition"
           }
         >
           Proveedores
@@ -46,13 +46,13 @@ const Menu = () => {
           <>
             <Link
               to="/login"
-              className="bg-green-700 text-white px-5 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition whitespace-nowrap"
+              className="bg-green-700 text-white px-5 py-2 rounded-md hover:bg-terciario hover:text-primario transition whitespace-nowrap"
             >
               Iniciar Sesión
             </Link>
             <Link
               to="/signup"
-              className="bg-green-700 text-white px-5 py-2 rounded-md hover:bg-terciario hover:text-primario hover:font-bold transition whitespace-nowrap"
+              className="bg-green-700 text-white px-5 py-2 rounded-md hover:bg-terciario hover:text-primario transition whitespace-nowrap"
             >
               Registrarse
             </Link>
@@ -61,7 +61,7 @@ const Menu = () => {
           <Boton
             evento={cerrarSesion}
             variante="peligro"
-            className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 hover:font-bold transition"
+            className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
           >
             <i className="pi pi-sign-out ml-1"></i>
           </Boton>
