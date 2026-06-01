@@ -56,7 +56,7 @@ const DetalleProducto = () => {
         {/* Lado Izquierdo: Imagen */}
         <div className="bg-gray-50 rounded-xl overflow-hidden flex items-center justify-center p-8">
           <img
-            src={`http://localhost:8095/storage/${producto.imagen_url}`}
+            src={`${import.meta.env.VITE_BASE_URL}/storage/${producto.imagen_url}`}
             alt={producto.nombre}
             onError={(e) => {
               e.target.src =
