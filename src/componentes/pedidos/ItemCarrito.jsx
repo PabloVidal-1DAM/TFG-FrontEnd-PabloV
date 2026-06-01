@@ -14,7 +14,7 @@ const ItemCarrito = ({ item }) => {
       >
         {/* Imagen */}
         <img
-          src={`http://localhost:8095/storage/${item.imagen_url}`}
+          src={`${import.meta.env.VITE_BASE_URL}/storage/${item.imagen_url}`}
           alt={item.nombre}
           onError={(e) => {
             e.target.src =
