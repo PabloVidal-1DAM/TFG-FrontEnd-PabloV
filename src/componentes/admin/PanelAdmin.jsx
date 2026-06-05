@@ -8,7 +8,7 @@ const PanelAdmin = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const { usuario, sesionIniciada, navegar } = useContextSesion();
 
-  // Comprobamos si, de entre los roles del usuario, existe uno llamado 'admin'
+  // Se comprueba si de entre los roles del usuario, existe uno llamado 'admin'
   const esAdmin = usuario?.roles?.some(rol => rol.name === 'admin');
 
   // Al cargar el componente se comprueba que el usuario no tenga sesión y que tenga pero no sea admin.
