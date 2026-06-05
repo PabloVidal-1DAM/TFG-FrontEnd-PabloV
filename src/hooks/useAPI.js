@@ -13,7 +13,7 @@ const useAPI = () => {
     return {
       "Content-Type": "application/json",
       Accept: "application/json",
-      // Si hay token, añadimos "Bearer token". Si no, va vacío.
+      // Si hay token, se añade a la cabecera. Si no, va vacío.
       Authorization: token ? `Bearer ${token}` : "",
     };
   };
@@ -123,8 +123,8 @@ const useAPI = () => {
         headers: {
           Accept: "application/json",
           Authorization: token ? `Bearer ${token}` : "",
-          // IMPORTANTE: Cuando usamos FormData, NO ponemos 'Content-Type'. 
-          // El navegador lo genera automáticamente con el 'boundary' necesario para archivos.
+          // IMPORTANTE: Cuando se manda FormData, NO se pone 'Content-Type'. 
+          // El navegador lo genera automáticamente con el 'boundary' necesario para archivos, por eso no llamo a obtenerCabeceras().
         },
         body: formData,
       });
